@@ -10,12 +10,12 @@ export class AuthController {
   // register for new user
   @Post('auth/register')
   register(@Body() body: CreateAuthDto) {
-    return this.authService.create(body.username, body.email, body.password, body.role);
+    return this.authService.create(body);
   }
 
   // login route for user
   @Post('auth/login')
   signIn(@Body() body: LoginAuhDTO) {
-    return this.authService.login(body.username, body.email, body.password);
+    return this.authService.login(body);
   }
 }

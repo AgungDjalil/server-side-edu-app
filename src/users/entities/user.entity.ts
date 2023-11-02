@@ -31,7 +31,7 @@ export class User {
 	@Column({ type: 'varchar' })
 	role: string
 
-	@Column({ type: 'int', nullable: true})
+	@Column({ type: 'int', default: 0})
 	point: number
 
 	@Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})

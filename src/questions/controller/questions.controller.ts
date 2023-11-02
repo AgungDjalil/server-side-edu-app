@@ -2,33 +2,44 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { QuestionsService } from '../service/questions.service';
 import { CreateQuestionDto } from '../dto/create-question.dto';
 import { UpdateQuestionDto } from '../dto/update-question.dto';
+import { Question } from '../entities/question.entity';
 
-@Controller('questions')
+@Controller('api')
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
-  @Post()
-  create(@Body() createQuestionDto: CreateQuestionDto) {
-    return this.questionsService.create(createQuestionDto);
+  // create questions
+  @Post('questions/:userID/create')
+  create(
+      @Body() createQuestionDto: CreateQuestionDto,
+      @Param('userID') userID: string
+    ): Promise<Question> {
+    return this.questionsService.create(createQuestionDto, userID);
   }
 
-  @Get()
-  findAll() {
+  // get all questions
+  @Get('questions')
+  findAll(): Promise<Question[]> {
     return this.questionsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.questionsService.findOne(+id);
+  // question details
+  @Get('questions/:questionID')
+  findOne(@Param('questionID') questionID: string): Promise<Question> {
+    return this.questionsService.findOne(questionID);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateQuestionDto: UpdateQuestionDto) {
-    return this.questionsService.update(+id, updateQuestionDto);
+  @Patch('questions/:questionID/:userID/update')
+  update(
+    @Param('userID') userID: string,
+    @Param('questionID') questionID: string, 
+    @Body() body: UpdateQuestionDto
+  ): Promise<Question> {
+    return this.questionsService.update(questionID, userID, body);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.questionsService.remove(+id);
-  }
+  // @Delete('questions/:questionID/delete')
+  // remove(@Param('questionID') questionID: string) {
+  //   return this.questionsService.remove(questionID);
+  // }
 }

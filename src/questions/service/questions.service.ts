@@ -1,26 +1,82 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateQuestionDto } from '../dto/create-question.dto';
 import { UpdateQuestionDto } from '../dto/update-question.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Question } from '../entities/question.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class QuestionsService {
-  create(createQuestionDto: CreateQuestionDto) {
-    return 'This action adds a new question';
+  constructor(
+    @InjectRepository(Question) private questionRepository: Repository<Question>
+  ) {}
+
+  async create(body: CreateQuestionDto, userID: string): Promise<Question> | null{
+    try {
+      const question = this.questionRepository.create({
+        questionText: body.questionText,
+        userID,
+        category: body.category
+      })
+
+      await this.questionRepository.save(question)
+
+      return question
+
+    } catch (err) {
+      console.log(err)
+    }
   }
 
-  findAll() {
-    return `This action returns all questions`;
+  async findAll() {
+    const question = await this.questionRepository.find()
+    return question;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} question`;
+  async findOne(questionID: string): Promise<Question> {
+    const question = await this.questionRepository.findOneBy({
+      questionID
+    })
+
+    if(!question)
+      throw new NotFoundException('question not found')
+
+    return question;
   }
 
-  update(id: number, updateQuestionDto: UpdateQuestionDto) {
-    return `This action updates a #${id} question`;
+  async update(questionID: string, userID: string, body: UpdateQuestionDto): Promise<Question> {
+    try {
+      const question = await this.questionRepository.findOneBy({
+        questionID,
+        userID
+      })
+
+      Object.assign(question, body)
+
+      await this.questionRepository.save(question)
+      
+      return question
+
+    } catch (err) { 
+      console.log(err)
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} question`;
-  }
+  // async remove(questionID: string) {
+  //   try {
+  //     const question = await this.questionRepository.findOneBy({
+  //       questionID
+  //     })
+
+  //     Object.assign(question, )
+
+  //     await this.questionRepository.save(question)
+      
+  //     return question
+
+  //     return `This action removes a #${} question`;
+  //   } catch (err) {
+
+  //   }
+  // }
 }

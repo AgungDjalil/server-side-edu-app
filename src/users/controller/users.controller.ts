@@ -2,33 +2,33 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UsersService } from '../service/users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
+import { User } from '../entities/user.entity'
 
-@Controller('users')
+@Controller('api')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
-  @Get()
-  findAll() {
+  // get all users
+  @Get('users')
+  findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  // get one user with id
+  @Get('users/:userID')
+  findOne(@Param('userID') userID: string) {
+    return this.usersService.findOne(userID);
   }
 
-  @Patch(':id')
+  // route for edit user
+  @Patch('users/:userID/update')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  // route for delete user
+  @Delete('users/:userID/delete')
+  remove(@Param('userID') userID: string) {
+    return this.usersService.remove(userID);
   }
 }

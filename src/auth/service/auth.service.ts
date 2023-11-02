@@ -1,41 +1,51 @@
-import { Injectable, NotAcceptableException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotAcceptableException, NotFoundException, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from "bcrypt";
+import { CreateAuthDto } from '../dto/create-auth.dto';
+import { LoginAuhDTO } from '../dto/login-auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
-  async create(username: string, email: string, password: string, role: string) {
-    const isEmail = await this.userRepository.findOneBy({ email })
+  async create(body: CreateAuthDto) {
+    try {
+      const hashPassword = await bcrypt.hash(body.password, 15)
 
-    if(isEmail)
-        throw new NotAcceptableException('Invalid email address')
+      const user = this.userRepository.create({ 
+        username: body.username, 
+        email: body.email, 
+        password:hashPassword, 
+        role: body.role 
+      })
 
-    const isUsername = await this.userRepository.findOneBy({ username })
+      await this.userRepository.save(user)
 
-    if(isUsername)
-        throw new NotAcceptableException('Invalid username')
+      return user
 
-    const user = this.userRepository.create({ username, email, password })
-    
-    await this.userRepository.save(user)
+    } catch (err) {
 
-    return user
+      if(err.message.includes('@gmail.com'))
+        throw new UnprocessableEntityException('Email already exists')
+
+      throw new UnprocessableEntityException('Username already exists')
+    }
   }
 
-  async login(username: string, email: string , password: string) {
-    const user = username ? await this.userRepository.findOneBy({ username }) : await this.userRepository.findOneBy({ email })
+  async login(body: LoginAuhDTO) {
+    const user = body.username ? 
+      await this.userRepository.findOneBy({ username: body.username }): 
+      await this.userRepository.findOneBy({ email: body.email })
 
-    if(!user) 
-        throw new NotFoundException('Email or username not found')
+    if(!user)
+      throw new NotFoundException(`User ${body.username} not found`);
 
-    const isSuccess = await bcrypt.compare(password, user.password)
+    const passwordMatch = await bcrypt.compare(body.password, user.password)
 
-    if(!isSuccess) 
-        throw new UnauthorizedException('Password is incorrect')
+    if(!passwordMatch)
+      throw new NotAcceptableException('password mismatch');
 
     return user
   }

@@ -10,7 +10,7 @@ export class Question {
 
 	@ManyToOne(() => User, user => user.questions)
 	@JoinColumn({ name: 'userID'})
-	userID: User
+	userID: string;
 
 	@OneToMany(() => Answer, answer => answer.questionID)
 	answers: Answer[]
@@ -24,11 +24,11 @@ export class Question {
 	@Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
 	createdAt: Date
 
-	@Column({ type: 'boolean'})
+	@Column({ type: 'boolean', default: false})
 	banned: boolean
 
 	@BeforeInsert()
-	generateInsert() {
+	generateID(): void {
 		this.questionID = uuidV4()
 	}
 }
