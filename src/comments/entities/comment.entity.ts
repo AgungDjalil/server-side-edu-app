@@ -9,14 +9,17 @@ export class Comment {
 	@PrimaryColumn()
 	commentID: string
 
+	// relasi ke user
 	@OneToMany(() => User, (user) => user.userID)
 	userID: User
 
-	@ManyToMany(() => Question)
+	// relasi ke question
+	@OneToMany(() => Question, (question) => question.questionID)
     @JoinTable()
     questions: Question[]
 
-    @ManyToMany(() => Answer)
+	// relasi ke answer
+    @OneToMany(() => Answer, (answer) => answer.answerID)
     @JoinTable()
     Answer: Answer[]
 

@@ -8,10 +8,12 @@ export class Question {
 	@PrimaryColumn()
 	questionID: string
 
+	// relasi ke user
 	@ManyToOne(() => User, user => user.questions)
 	@JoinColumn({ name: 'userID'})
 	userID: string;
 
+	// relasi ke answer
 	@OneToMany(() => Answer, answer => answer.questionID)
 	answers: Answer[]
 	
