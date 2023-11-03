@@ -2,31 +2,31 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { AnswerService } from '../service/answer.service';
 import { CreateAnswerDto } from '../dto/create-answer.dto';
 import { UpdateAnswerDto } from '../dto/update-answer.dto';
+import { Answer } from '../entities/answer.entity';
 
-@Controller('answer')
+@Controller('api')
 export class AnswerController {
   constructor(private readonly answerService: AnswerService) {}
 
-  @Post()
-  create(@Body() createAnswerDto: CreateAnswerDto) {
-    return this.answerService.create(createAnswerDto);
+  // for create new answer
+  @Post('answer/:userID/create/:questionID')
+  create(
+    @Param('userID') userID: string,
+    @Param('questionID') questionID: string,
+    @Body() body: CreateAnswerDto
+  ): Promise<Answer | null> {
+    return this.answerService.create(body, userID, questionID);
   }
 
-  @Get()
-  findAll() {
-    return this.answerService.findAll();
+  // edit answer
+  @Patch('answer/:answerID/edit')
+  update(
+    @Param('answerID') answerID: string, 
+    @Body() body: UpdateAnswerDto): Promise<Answer> {
+    return this.answerService.update(answerID, body);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.answerService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAnswerDto: UpdateAnswerDto) {
-    return this.answerService.update(+id, updateAnswerDto);
-  }
-
+  // delete answer
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.answerService.remove(+id);

@@ -4,6 +4,7 @@ import { UpdateQuestionDto } from '../dto/update-question.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from '../entities/question.entity';
 import { Repository } from 'typeorm';
+import { Answer } from 'src/answer/entities/answer.entity';
 
 @Injectable()
 export class QuestionsService {
@@ -11,7 +12,7 @@ export class QuestionsService {
     @InjectRepository(Question) private questionRepository: Repository<Question>
   ) {}
 
-  async create(body: CreateQuestionDto, userID: string): Promise<Question> | null{
+  async create(body: CreateQuestionDto, userID: string): Promise<Question | null> {
     try {
       const question = this.questionRepository.create({
         questionText: body.questionText,
@@ -28,20 +29,22 @@ export class QuestionsService {
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<Question[] | null> {
     const question = await this.questionRepository.find()
     return question;
   }
 
-  async findOne(questionID: string): Promise<Question> {
-    const question = await this.questionRepository.findOneBy({
-      questionID
-    })
+  async findOne(questionID: string): Promise<Question | null> {
+    try {
+      const question = await this.questionRepository.findOneBy({
+        questionID
+      })
 
-    if(!question)
-      throw new NotFoundException('question not found')
+      return question;
 
-    return question;
+    } catch (err) {
+      console.log(err.message)
+    }
   }
 
   async update(questionID: string, userID: string, body: UpdateQuestionDto): Promise<Question> {
@@ -58,7 +61,7 @@ export class QuestionsService {
       return question
 
     } catch (err) { 
-      console.log(err)
+      console.log(err.message)
     }
   }
 

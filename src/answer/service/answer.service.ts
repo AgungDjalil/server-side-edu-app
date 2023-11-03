@@ -1,23 +1,59 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAnswerDto } from '../dto/create-answer.dto';
 import { UpdateAnswerDto } from '../dto/update-answer.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Answer } from '../entities/answer.entity';
+import { Repository } from 'typeorm';
+import { QuestionsService } from 'src/questions/service/questions.service';
 
 @Injectable()
 export class AnswerService {
-  create(createAnswerDto: CreateAnswerDto) {
-    return 'This action adds a new answer';
+  constructor(
+    @InjectRepository(Answer) private answerRepository: Repository<Answer>
+  ) {}
+
+  async create(body: CreateAnswerDto, userID: string, questionID: string): Promise<Answer | null> {
+    try {
+      const answer = this.answerRepository.create({
+        userID,
+        questionID,
+        answerText: body.answerText
+      })
+
+      await this.answerRepository.save(answer)
+      
+      return answer;
+
+    } catch (err) {
+      console.log(err)
+    }
   }
 
-  findAll() {
-    return `This action returns all answer`;
+  async findAllAnswerForQuestion(questionID: string): Promise<Answer[] | null> {
+    try {
+      const answer = this.answerRepository.findBy({ questionID })
+
+      return answer
+
+    } catch (err) {
+      console.log(err)
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} answer`;
-  }
+  async update(answerID: string, body: UpdateAnswerDto): Promise<Answer> {
+    try {
+      const answer = await this.answerRepository.findOneBy({ answerID })
 
-  update(id: number, updateAnswerDto: UpdateAnswerDto) {
-    return `This action updates a #${id} answer`;
+      Object.assign(answer, body)
+
+      await this.answerRepository.save(answer)
+
+      return answer;
+
+    } catch (err) {
+      console.log(err)
+    }
+
   }
 
   remove(id: number) {

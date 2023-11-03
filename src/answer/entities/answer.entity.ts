@@ -6,15 +6,15 @@ import { Question } from '../../questions/entities/question.entity'
 @Entity()
 export class Answer {
 	@PrimaryColumn()
-	AnswerID: string
+	answerID: string
  
 	@ManyToOne(() => User, (user) => user.answers)
 	@JoinColumn({ name: 'userID' })
-	userID: User
+	userID: string
 
 	@ManyToOne(() => Question, (question) => question.answers)
 	@JoinColumn({ name: 'questionID' })
-	questionID: Question
+	questionID: string
 
 	@Column({ type: 'varchar' })
 	answerText: string
@@ -22,14 +22,14 @@ export class Answer {
 	@Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
 	createdAt: Date
 
-	@Column({ type: 'boolean' })
+	@Column({ type: 'boolean', default: false })
 	verified: boolean
 
-	@Column({ type: 'boolean'})
+	@Column({ type: 'boolean', default: false })
 	banned: boolean
 
 	@BeforeInsert()
 	generateInsert() {
-		this.AnswerID = uuidV4()
+		this.answerID = uuidV4()
 	}
 }
