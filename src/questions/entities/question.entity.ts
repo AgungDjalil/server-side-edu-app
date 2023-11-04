@@ -1,7 +1,16 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, BeforeInsert, OneToMany } from 'typeorm'
+import { 
+	Entity, 
+	PrimaryColumn, 
+	Column, 
+	ManyToOne, 
+	JoinColumn, 
+	BeforeInsert, 
+	OneToMany 
+} from 'typeorm'
 import { v4 as uuidV4 } from 'uuid'
 import { User } from '../../users/entities/user.entity'
 import { Answer } from 'src/answer/entities/answer.entity'
+import { Comment } from 'src/comments/entities/comment.entity'
 
 @Entity()
 export class Question {
@@ -16,6 +25,10 @@ export class Question {
 	// relasi ke answer
 	@OneToMany(() => Answer, answer => answer.questionID)
 	answers: Answer[]
+
+	// relasi ke comment
+	@OneToMany(() => Comment, comment => comment.commentID)
+	commentID: Comment[]
 	
 	@Column()
 	questionText: string

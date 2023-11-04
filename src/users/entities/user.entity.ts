@@ -3,9 +3,7 @@ import {
 	PrimaryColumn, 
 	Column, 
 	BeforeInsert, 
-	OneToMany, 
-	JoinColumn, 
-	ManyToOne
+	OneToMany
 } from "typeorm"
 import { v4 as uuidV4 } from 'uuid'
 import { Question } from '../../questions/entities/question.entity'
@@ -26,8 +24,7 @@ export class User {
 	answers: Answer[]
 
 	// relasi ke comment
-	@ManyToOne(() => Comment, (comment) => comment.userID)
-	@JoinColumn({ name: 'userID' })
+	@OneToMany(() => Comment, (comment) => comment.userID)
 	comments: Comment[]
 
 	@Column({ type: 'varchar', unique: true })

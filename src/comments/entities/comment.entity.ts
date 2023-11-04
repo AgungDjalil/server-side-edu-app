@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany, JoinTable, BeforeInsert } from 'typeorm'
+import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany, JoinTable, BeforeInsert, ManyToOne } from 'typeorm'
 import { v4 as uuidV4 } from 'uuid'
 import { User } from '../../users/entities/user.entity'
 import { Question } from '../../questions/entities/question.entity'
@@ -10,18 +10,18 @@ export class Comment {
 	commentID: string
 
 	// relasi ke user
-	@OneToMany(() => User, (user) => user.userID)
-	userID: User
+	@ManyToOne(() => User, (user) => user.userID)
+	userID: string
 
 	// relasi ke question
-	@OneToMany(() => Question, (question) => question.questionID)
-    @JoinTable()
-    questions: Question[]
+	@ManyToOne(() => Question, (question) => question.commentID)
+	@Column({ nullable: true})
+    questionID: string
 
 	// relasi ke answer
-    @OneToMany(() => Answer, (answer) => answer.answerID)
-    @JoinTable()
-    Answer: Answer[]
+    @ManyToOne(() => Answer, (answer) => answer.answerID)
+	@Column({ nullable: true})
+    answerID: string
 
 	@Column({ type: 'varchar' }) 
 	commentText: string
