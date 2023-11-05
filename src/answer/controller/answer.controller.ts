@@ -3,7 +3,7 @@ import { AnswerService } from '../service/answer.service';
 import { CreateAnswerDto } from '../dto/create-answer.dto';
 import { UpdateAnswerDto } from '../dto/update-answer.dto';
 import { Answer } from '../entities/answer.entity';
-import Serialize from 'src/interceptor/serialize.interceptor';
+import Serialize from 'src/interceptors/serialize.interceptor';
 import { AnswerDTO } from '../dto/answer.dto';
 
 @Controller('api')

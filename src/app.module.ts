@@ -9,13 +9,24 @@ import { CategoryModule } from './category/category.module';
 import { VerifierModule } from './verifier/verifier.module';
 import { TagsModule } from './tags/tags.module';
 import { ReportsModule } from './reports/reports.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/guard/auth.guard';
+import { RolesGuard } from './guards/role.guard';
 
 @Module({
   providers: [
     {
       provide: 'APP_PIPE',
       useClass: ValidationPipe
-    }
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
   imports: [
     DatabaseModule,
@@ -25,7 +36,9 @@ import { ReportsModule } from './reports/reports.module';
     AnswerModule, 
     CommentsModule, 
     CategoryModule, 
-    VerifierModule, TagsModule, ReportsModule
+    VerifierModule, 
+    TagsModule, 
+    ReportsModule
   ],
 })
 export class AppModule {}

@@ -11,6 +11,7 @@ import { Comment } from '../../comments/entities/comment.entity'
 import { Answer } from "src/answer/entities/answer.entity"
 import { Tag } from "src/tags/entities/tag.entity"
 import { Category } from "src/category/entities/category.entity"
+import { Role } from "src/enum/role.enum"
 
 @Entity()
 export class User {
@@ -46,8 +47,8 @@ export class User {
 	@Column({ type: 'varchar' })
 	password: string
 
-	@Column({ type: 'varchar' })
-	role: string
+	@Column({ type: 'enum', enum: Role, default: Role.User })
+	role: Role
 
 	@Column({ type: 'int', default: 0})
 	point: number

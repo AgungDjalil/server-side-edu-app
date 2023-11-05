@@ -3,7 +3,7 @@ import { QuestionsService } from '../service/questions.service';
 import { CreateQuestionDto } from '../dto/create-question.dto';
 import { UpdateQuestionDto } from '../dto/update-question.dto';
 import { Question } from '../entities/question.entity';
-import Serialize from 'src/interceptor/serialize.interceptor';
+import Serialize from 'src/interceptors/serialize.interceptor';
 import { QuestionDTO } from '../dto/question.dto';
 
 @Controller('api')

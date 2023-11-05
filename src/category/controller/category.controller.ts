@@ -3,8 +3,11 @@ import { CategoryService } from '../service/category.service';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
 import { Category } from '../entities/category.entity';
+import Serialize from 'src/interceptors/serialize.interceptor';
+import { CategoryDTO } from '../dto/category.dto';
 
 @Controller('api')
+@Serialize(CategoryDTO)
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 

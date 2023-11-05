@@ -15,12 +15,10 @@ export class Comment {
 
 	// relasi ke question
 	@ManyToOne(() => Question, (question) => question.commentID)
-	@Column({ nullable: true})
     questionID: string
 
 	// relasi ke answer
     @ManyToOne(() => Answer, (answer) => answer.answerID)
-	@Column({ nullable: true})
     answerID: string
 
 	@Column({ type: 'varchar' }) 
