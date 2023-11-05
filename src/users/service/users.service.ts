@@ -1,11 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
-import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { Repository } from 'typeorm'
 import { User } from '../../users/entities/user.entity'
-import { Question } from 'src/questions/entities/question.entity';
-import { Answer } from 'src/answer/entities/answer.entity';
 
 @Injectable()
 export class UsersService {
@@ -28,38 +25,6 @@ export class UsersService {
         throw new NotFoundException("user not found");
         
       return user;
-
-    } catch (err) {
-      console.log(err.message)
-    }
-  }
-
-  async findAllUserQuestion(userID: string): Promise<Question[] | null> {
-    try {
-      const { questions } = await this.userRepository.findOne({
-        where: {
-          userID
-        },
-        relations: {
-          questions: true
-        }
-      })
-  
-      return questions
-
-    } catch (err) {
-      console.log(err.message)
-    }
-  }
-
-  async findAllUserAnswer(userID: string): Promise<Answer[] | null> {
-    try {
-      const { answers } = await this.userRepository.findOne({
-        where: { userID },
-        relations: { answers: true}
-      })
-  
-      return answers
 
     } catch (err) {
       console.log(err.message)

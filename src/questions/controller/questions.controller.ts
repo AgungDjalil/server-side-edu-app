@@ -3,15 +3,21 @@ import { QuestionsService } from '../service/questions.service';
 import { CreateQuestionDto } from '../dto/create-question.dto';
 import { UpdateQuestionDto } from '../dto/update-question.dto';
 import { Question } from '../entities/question.entity';
-import { Answer } from 'src/answer/entities/answer.entity';
-import { AnswerService } from 'src/answer/service/answer.service';
+import Serialize from 'src/interceptor/serialize.interceptor';
+import { QuestionDTO } from '../dto/question.dto';
 
 @Controller('api')
+@Serialize(QuestionDTO)
 export class QuestionsController {
   constructor(
-    private readonly questionsService: QuestionsService,
-    private readonly answerService: AnswerService
+    private readonly questionsService: QuestionsService
   ) {}
+
+  // get all users question
+  @Get('question/:userID/user')
+  async findAllQuestion(@Param('userID') userID: string): Promise<Question[] | null> {
+    return await this.questionsService.findAllUserQuestion(userID)
+  }
   
   // get all questions
   @Get('questions')
@@ -23,12 +29,6 @@ export class QuestionsController {
   @Get('questions/:questionID')
   async findOne(@Param('questionID') questionID: string): Promise<Question | null> {
     return await this.questionsService.findOne(questionID);
-  }
-
-  // get all answer for question
-  @Get('questions/:questionID/answer')
-  findAllAnswer(@Param('questionID') questionID: string): Promise<Answer[] | null> {
-    return this.answerService.findAllAnswerForQuestion(questionID)
   }
 
   // create questions
@@ -49,7 +49,7 @@ export class QuestionsController {
   ): Promise<Question | null> {
     return await this.questionsService.update(questionID, userID, body);
   }
-s
+
   // @Delete('questions/:questionID/delete')
   // remove(@Param('questionID') questionID: string) {
   //   return this.questionsService.remove(questionID);

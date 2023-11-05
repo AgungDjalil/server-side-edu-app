@@ -11,6 +11,17 @@ export class QuestionsService {
     @InjectRepository(Question) private questionRepository: Repository<Question>
   ) {}
 
+  async findAllUserQuestion(userID: string): Promise<Question[] | null> {
+    try {
+      const questions = await this.questionRepository.findBy({ userID })
+  
+      return questions
+
+    } catch (err) {
+      console.log(err.message)
+    }
+  }
+
   async create(body: CreateQuestionDto, userID: string): Promise<Question | null> {
     try {
       const question = this.questionRepository.create({

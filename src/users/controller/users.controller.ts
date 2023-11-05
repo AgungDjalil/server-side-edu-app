@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UsersService } from '../service/users.service';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity'
-import { Question } from 'src/questions/entities/question.entity';
-import { Answer } from 'src/answer/entities/answer.entity';
+import Serialize from 'src/interceptor/serialize.interceptor';
+import { UserDTO } from '../dto/user.dto';
 
 @Controller('api')
+@Serialize(UserDTO)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -19,18 +20,6 @@ export class UsersController {
   @Get('users/:userID')
   async findOne(@Param('userID') userID: string): Promise<User | null> {
     return await this.usersService.findOne(userID);
-  }
-
-  // get all users question
-  @Get('users/:userID/questions')
-  async findAllQuestion(@Param('userID') userID: string): Promise<Question[] | null> {
-    return await this.usersService.findAllUserQuestion(userID)
-  }
-
-  // get all users answer
-  @Get('users/:userID/answer')
-  async findAllAnswer(@Param('userID') userID: string): Promise<Answer[] | null> {
-    return await this.usersService.findAllUserAnswer(userID)
   }
 
   // route for edit user

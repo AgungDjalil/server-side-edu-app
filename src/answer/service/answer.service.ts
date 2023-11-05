@@ -4,13 +4,23 @@ import { UpdateAnswerDto } from '../dto/update-answer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Answer } from '../entities/answer.entity';
 import { Repository } from 'typeorm';
-import { QuestionsService } from 'src/questions/service/questions.service';
 
 @Injectable()
 export class AnswerService {
   constructor(
     @InjectRepository(Answer) private answerRepository: Repository<Answer>
   ) {}
+
+  async findAllUserAnswer(userID: string): Promise<Answer[] | null> {
+    try {
+      const answers = await this.answerRepository.findBy({ userID })
+  
+      return answers
+
+    } catch (err) {
+      console.log(err.message)
+    }
+  }
 
   async create(body: CreateAnswerDto, userID: string, questionID: string): Promise<Answer | null> {
     try {
