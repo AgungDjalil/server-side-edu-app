@@ -26,6 +26,8 @@ export class AuthService {
         role: Role.Moderator
       })
 
+      await this.userRepository.save(moderator)
+
       return moderator
 
     } catch (err) {
@@ -43,6 +45,8 @@ export class AuthService {
         password: hashPassword,
         role: Role.Admin
       })
+
+      await this.userRepository.save(admin)
 
       return admin
 
