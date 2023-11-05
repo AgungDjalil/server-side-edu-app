@@ -10,7 +10,7 @@ export class CommentsService {
     @InjectRepository(Comment) private commentRepository: Repository<Comment>
   ) {}
 
-  async findAllCommentFor(questionID: string = null, answerID: string = null): Promise<Comment[] | null> {
+  async findAllCommentFor(questionID: string, answerID: string): Promise<Comment[] | null> {
     if(questionID) {
       const comments = await this.commentRepository.findBy({ questionID })
 
@@ -18,48 +18,40 @@ export class CommentsService {
 
     } else if (answerID) {
       const comments = await this.commentRepository.findBy({ answerID })
-
       return comments
     }
   }
 
-  async createAnswerComment(
+  async createCommentFor(
     userID: string,
     answerID: string,
-    body: CreateCommentDto
-  ): Promise<Comment | null> {
-    try {
-      const comment = this.commentRepository.create({ 
-        userID,
-        answerID,
-        commentText: body.commentText 
-      })
-
-      await this.commentRepository.save(comment)  
-  
-      return comment;
-
-    } catch (err) {
-      console.log(err.message)
-    }
-  }
-
-  async createQuestionComment(
-    userID: string,
     questionID: string,
     body: CreateCommentDto
   ): Promise<Comment | null> {
     try {
-      const comment = this.commentRepository.create({ 
-        userID,
-        questionID,
-        commentText: body.commentText 
-      })
 
-      await this.commentRepository.save(comment)  
+      if(answerID) {
+        const comment = this.commentRepository.create({ 
+          userID,
+          answerID,
+          commentText: body.commentText 
+        })
   
-      return comment;
+        await this.commentRepository.save(comment)  
+    
+        return comment;
 
+      } else if (questionID) {
+        const comment = this.commentRepository.create({ 
+          userID,
+          questionID,
+          commentText: body.commentText 
+        })
+  
+        await this.commentRepository.save(comment)  
+    
+        return comment;
+      }
     } catch (err) {
       console.log(err.message)
     }

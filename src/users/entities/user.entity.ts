@@ -9,6 +9,8 @@ import { v4 as uuidV4 } from 'uuid'
 import { Question } from '../../questions/entities/question.entity'
 import { Comment } from '../../comments/entities/comment.entity'
 import { Answer } from "src/answer/entities/answer.entity"
+import { Tag } from "src/tags/entities/tag.entity"
+import { Category } from "src/category/entities/category.entity"
 
 @Entity()
 export class User {
@@ -26,6 +28,14 @@ export class User {
 	// relasi ke comment
 	@OneToMany(() => Comment, (comment) => comment.userID)
 	comments: Comment[]
+
+	// relasi ke tag
+	@OneToMany(() => Tag, (tag) => tag.userID)
+	tags: Tag[]
+
+	// relasi ke category
+	@OneToMany(() => Category, (category) => category.userID)
+	categories: Category[]
 
 	@Column({ type: 'varchar', unique: true })
 	username: string

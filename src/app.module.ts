@@ -7,6 +7,8 @@ import { CommentsModule } from './comments/comments.module';
 import { DatabaseModule } from './database/database.module';
 import { CategoryModule } from './category/category.module';
 import { VerifierModule } from './verifier/verifier.module';
+import { TagsModule } from './tags/tags.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   providers: [
@@ -22,7 +24,8 @@ import { VerifierModule } from './verifier/verifier.module';
     QuestionsModule, 
     AnswerModule, 
     CommentsModule, 
-    CategoryModule, VerifierModule
+    CategoryModule, 
+    VerifierModule, TagsModule, ReportsModule
   ],
 })
 export class AppModule {}

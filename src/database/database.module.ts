@@ -5,6 +5,8 @@ import { Answer } from 'src/answer/entities/answer.entity'
 import { Question } from 'src/questions/entities/question.entity'
 import { User } from 'src/users/entities/user.entity'
 import { Comment } from 'src/comments/entities/comment.entity'
+import { Category } from 'src/category/entities/category.entity'
+import { Tag } from 'src/tags/entities/tag.entity'
 
 @Module({
     imports: [
@@ -20,7 +22,9 @@ import { Comment } from 'src/comments/entities/comment.entity'
                 User,
                 Question,
                 Answer,
-                Comment
+                Comment,
+                Category,
+                Tag
             ],
             synchronize: true,
         })

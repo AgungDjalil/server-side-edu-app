@@ -29,7 +29,7 @@ export class Comment {
 	@Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
 	createdAt: Date
 
-	@Column({ type: 'boolean'})
+	@Column({ type: 'boolean', default: false})
 	banned: boolean
 
 	@BeforeInsert()

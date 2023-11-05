@@ -4,7 +4,6 @@ import { UpdateQuestionDto } from '../dto/update-question.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from '../entities/question.entity';
 import { Repository } from 'typeorm';
-import { Answer } from 'src/answer/entities/answer.entity';
 
 @Injectable()
 export class QuestionsService {
@@ -16,8 +15,7 @@ export class QuestionsService {
     try {
       const question = this.questionRepository.create({
         questionText: body.questionText,
-        userID,
-        category: body.category
+        userID
       })
 
       await this.questionRepository.save(question)
