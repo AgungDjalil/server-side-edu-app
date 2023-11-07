@@ -11,6 +11,43 @@ export class AnswerService {
     @InjectRepository(Answer) private answerRepository: Repository<Answer>
   ) {}
 
+  async find(): Promise<Answer[] | null> {
+    try {
+      const answer = await this.answerRepository.find()
+  
+      return answer
+
+    } catch (err) {
+      return err.message
+    }
+  }
+
+  async verifyAnswer(answerID: string): Promise<Answer | null> {
+    try {
+      const answer = await this.answerRepository.findOneById(answerID)
+
+      answer.isVerified = true;
+
+      return answer
+
+    } catch (err) {
+      return err.message
+    }
+  }
+
+  async findAllAnswerUnverified(): Promise<Answer[] | null> {
+    try {
+      const answer = await this.answerRepository.find({
+        where: { isVerified: false }
+      })
+  
+      return answer
+
+    } catch (err) {
+      return err
+    }
+  }
+
   async findAllUserAnswer(userID: string): Promise<Answer[] | null> {
     try {
       const answers = await this.answerRepository.find({ 

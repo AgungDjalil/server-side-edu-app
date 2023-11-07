@@ -3,10 +3,47 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { Repository } from 'typeorm'
 import { User } from '../../users/entities/user.entity'
+import { SuspendUserDTO } from '../dto/suspend-user.dto';
+import { ReportsUserService } from 'src/reports/service/reports-user.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>, 
+    private reportsUserService: ReportsUserService
+  ) {}
+
+  async find(): Promise<User[] | null> {
+    try {
+      const users = await this.userRepository.find()
+
+      return users
+      
+    } catch (err) {
+      return err.message
+    }
+  }
+
+  async suspend(userID: string, body: SuspendUserDTO) {
+    try {
+      const user = await this.userRepository.findOneById(userID)
+      
+      user.suspensionEndDate = body.suspensionEndDate
+
+      user.isSuspend = true
+      
+      const isSucces = await this.reportsUserService.removeFromUserReportTable(userID)
+      
+      if(isSucces) {
+        await this.userRepository.save(user)
+        
+        return 'succes to suspend user'
+      }
+
+    } catch (err) {
+      return err.message
+    }
+  }
 
   async isUserSuspended(userId: string): Promise<boolean> {
     const user = await this.userRepository.findOneById(userId);
@@ -16,10 +53,12 @@ export class UsersService {
     const month = currentDate.getMonth()
     const day = currentDate.getDate()
 
+    const userDateSuspendsion = user.suspensionEndDate.toDateString()
+
     if (
         user && user.isSuspend 
         && user.suspensionEndDate 
-        && user.suspensionEndDate !== `${year}-${month}-${day}`
+        &&  userDateSuspendsion !== `${year}-${month}-${day}`
       )
       return true;
     

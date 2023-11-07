@@ -45,7 +45,7 @@ export class Question {
 
 	// relasi ke report
 	@OneToMany(() => ReportQuestion, (report) => report.reportedQuestionID)
-	reports: Report[];
+	reports: ReportQuestion[];
 	
 	@Column()
 	questionText: string

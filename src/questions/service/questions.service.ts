@@ -4,12 +4,25 @@ import { UpdateQuestionDto } from '../dto/update-question.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from '../entities/question.entity';
 import { Repository } from 'typeorm';
+import { ReportsQuestionService } from 'src/reports/service/reports-question.service';
 
 @Injectable()
 export class QuestionsService {
   constructor(
-    @InjectRepository(Question) private questionRepository: Repository<Question>
+    @InjectRepository(Question) private questionRepository: Repository<Question>,
+    private readonly reportsQuestionService: ReportsQuestionService
   ) {}
+
+  async find(): Promise<Question[] | null> {
+    try {
+      const questions = await this.questionRepository.find()
+
+      return questions
+
+    } catch (err) {
+      return err.message
+    }
+  }
 
   async findAllUserQuestion(userID: string): Promise<Question[] | null> {
     try {
@@ -99,10 +112,14 @@ export class QuestionsService {
 
       question.isActive = false
 
-      await this.questionRepository.save(question)
+      const isSuccess = await this.reportsQuestionService.removeFromQuestionReportTable(questionID)
 
-      return 'succes to delete user';
-
+      if(isSuccess) {
+        await this.questionRepository.save(question)
+  
+        return 'succes to delete user'; 
+      }
+      
     } catch (err) {
       return err.message
     }

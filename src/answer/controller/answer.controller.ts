@@ -15,16 +15,23 @@ import { Role } from 'src/enum/role.enum';
 export class AnswerController {
   constructor(private readonly answerService: AnswerService) {}
 
+  // route for get all answer (banned and no)
+  @Roles(Role.Admin)
+  @Get('answers')
+  async findAllAnswer(): Promise<Answer[] | null> {
+    return await this.answerService.find()
+  }
+
   // get all answer based on question
   @Public()
   @Get('questions/:questionID/answer')
-  findAllAnswerBasedQuestion(@Param('questionID') questionID: string): Promise<Answer[] | null> {
-    return this.answerService.findAllAnswerForQuestion(questionID)
+  async findAllAnswerBasedQuestion(@Param('questionID') questionID: string): Promise<Answer[] | null> {
+    return await this.answerService.findAllAnswerForQuestion(questionID)
   }
   
   // get all users answer
   @Get('answer/user')
-  async findAllAnswer(@CurrentUserID() userID: string): Promise<Answer[] | null> {
+  async findAllUserAnswer(@CurrentUserID() userID: string): Promise<Answer[] | null> {
     return await this.answerService.findAllUserAnswer(userID)
   }
 

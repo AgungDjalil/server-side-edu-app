@@ -17,13 +17,20 @@ export class QuestionsController {
     private readonly questionsService: QuestionsService
   ) {}
 
+  // get all questions 
+  @Roles(Role.Admin)
+  @Get('questions/admin')
+  async find(): Promise<Question[] | null> {
+    return await this.questionsService.find()
+  }
+
   // get all users question
   @Get('questions/user')
   async findAllQuestion(@CurrentUserID() userID: string): Promise<Question[] | null> {
     return await this.questionsService.findAllUserQuestion(userID)
   }
   
-  // get all questions
+  // get all questions ( isActive: true )
   @Public()
   @Get('questions')
   async findAll(): Promise<Question[] | null> {

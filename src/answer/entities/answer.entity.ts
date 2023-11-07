@@ -35,7 +35,7 @@ export class Answer {
 	createdAt: Date
 
 	@Column({ type: 'boolean', default: false })
-	verified: boolean
+	isVerified: boolean
 
 	@Column({ type: 'boolean', default: true })
 	isActive: boolean

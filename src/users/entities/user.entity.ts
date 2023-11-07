@@ -69,7 +69,7 @@ export class User {
 	isSuspend: boolean
 
 	@Column({ type: 'date', nullable: true})
-	suspensionEndDate: string
+	suspensionEndDate: Date
 
 	@Column({ type: 'boolean', default: true})
 	isActive: boolean
