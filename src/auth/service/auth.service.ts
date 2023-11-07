@@ -1,10 +1,10 @@
-import { Injectable, NotAcceptableException, NotFoundException, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotAcceptableException, NotFoundException, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from "bcrypt";
-import { CreateAuthDto } from '../dto/create-auth.dto';
-import { LoginAuhDTO } from '../dto/login-auth.dto';
+import { CreateUserDTO } from 'src/users/dto/create-user.dto';
+import { LoginAuthDTO } from '../dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from 'src/enum/role.enum';
 
@@ -13,9 +13,9 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService
-  ) { }
+  ) {}
 
-  async createModerator(body: CreateAuthDto) {
+  async createModerator(body: CreateUserDTO) {
     try {
       const hashPassword = await bcrypt.hash(body.password, 15)
   
@@ -31,11 +31,11 @@ export class AuthService {
       return moderator
 
     } catch (err) {
-      console.log(err)
+      return err.message
     }
   }
 
-  async createAdmin(body: CreateAuthDto) {
+  async createAdmin(body: CreateUserDTO) {
     try {
       const hashPassword = await bcrypt.hash(body.password, 15)
   
@@ -51,11 +51,11 @@ export class AuthService {
       return admin
 
     } catch (err) {
-      console.log(err)
+      return err.message
     }
   }
 
-  async create(body: CreateAuthDto) {
+  async create(body: CreateUserDTO) {
     try {
       const hashPassword = await bcrypt.hash(body.password, 15)
 
@@ -78,10 +78,16 @@ export class AuthService {
     }
   }
 
-  async login(body: LoginAuhDTO) {
+  async login(body: LoginAuthDTO) {
     try {
       if (body.username) {
         const user = await this.userRepository.findOneBy({ username: body.username })
+
+        if(user && !user.isActive)
+          throw new ForbiddenException(`you've been suspended for ${user.suspensionEndDate}`)
+
+        if(user && !user.isActive)
+          throw new ForbiddenException(`you have been blocked forever`)
 
         const passwordMatch = await bcrypt.compare(body.password, user.password)
 
@@ -91,7 +97,8 @@ export class AuthService {
         const payload = {
           sub: user.userID,
           username: user.username,
-          role: user.role
+          role: user.role,
+          suspenDate: user.suspensionEndDate
         }
 
         return {
@@ -109,7 +116,8 @@ export class AuthService {
         const payload = {
           sub: user.userID,
           username: user.username,
-          role: user.role
+          role: user.role,
+          suspenDate: user.suspensionEndDate
         }
 
         return {
@@ -117,7 +125,7 @@ export class AuthService {
         }
       }
     } catch (err) {
-      console.error(err.message)
+      return err.message
     }
   }
 }

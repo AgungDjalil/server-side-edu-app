@@ -5,9 +5,7 @@ import {
 	ManyToOne, 
 	JoinColumn, 
 	BeforeInsert, 
-	OneToMany, 
-	ManyToMany,
-	JoinTable
+	OneToMany
 } from 'typeorm'
 import { v4 as uuidV4 } from 'uuid'
 import { User } from '../../users/entities/user.entity'
@@ -15,6 +13,7 @@ import { Answer } from 'src/answer/entities/answer.entity'
 import { Comment } from 'src/comments/entities/comment.entity'
 import { Category } from 'src/category/entities/category.entity'
 import { Tag } from 'src/tags/entities/tag.entity'
+import { ReportQuestion } from 'src/reports/entities/report-question.entity'
 
 @Entity()
 export class Question {
@@ -23,7 +22,7 @@ export class Question {
 
 	// relasi ke user
 	@ManyToOne(() => User, user => user.questions)
-	@JoinColumn({ name: 'userID'})
+	@JoinColumn({ name: 'userID' })
 	userID: string;
 
 	// relasi ke answer
@@ -32,17 +31,21 @@ export class Question {
 
 	// relasi ke comment
 	@OneToMany(() => Comment, comment => comment.commentID)
-	commentID: Comment[]
+	comments: Comment[]
 
 	// relasi ke category
-	@ManyToMany(() => Category, (category) => category.questions)
-	@JoinTable()
-	categories: Category[]
+	@ManyToOne(() => Category, (category) => category.questions)
+	@JoinColumn({ name: 'categoryID' })
+	categoryID: string;
 
 	// relasi ke tag
-	@ManyToMany(() => Tag, (tag) => tag.categories)
-	@JoinTable()
-	tags: Tag[]
+	@ManyToOne(() => Tag, (tag) => tag.questions)
+	@JoinColumn({ name: 'tagID' })
+	tagID: string;
+
+	// relasi ke report
+	@OneToMany(() => ReportQuestion, (report) => report.reportedQuestionID)
+	reports: Report[];
 	
 	@Column()
 	questionText: string
@@ -50,8 +53,8 @@ export class Question {
 	@Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
 	createdAt: Date
 
-	@Column({ type: 'boolean', default: false})
-	banned: boolean
+	@Column({ type: 'boolean', default: true})
+	isActive: boolean
 
 	@BeforeInsert()
 	generateID(): void {

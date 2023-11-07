@@ -12,12 +12,23 @@ export class CommentsService {
 
   async findAllCommentFor(questionID: string, answerID: string): Promise<Comment[] | null> {
     if(questionID) {
-      const comments = await this.commentRepository.findBy({ questionID })
+      const comments = await this.commentRepository.find({ 
+        where: {
+          questionID,
+          isActive: true
+        } 
+      })
 
       return comments
 
     } else if (answerID) {
-      const comments = await this.commentRepository.findBy({ answerID })
+      const comments = await this.commentRepository.find({ 
+        where: {
+          answerID,
+          isActive: true
+        } 
+      })
+      
       return comments
     }
   }
@@ -57,7 +68,16 @@ export class CommentsService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+  async remove(commentID: string): Promise<string> {
+    try {
+      const comment = await this.commentRepository.findOneById(commentID)
+  
+      comment.isActive = false
+  
+      return 'user successfully hide';
+
+    } catch (err) {
+      return err.message
+    }
   }
 }

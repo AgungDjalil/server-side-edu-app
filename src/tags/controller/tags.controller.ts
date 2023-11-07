@@ -2,33 +2,40 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TagsService } from '../service/tags.service';
 import { CreateTagDto } from '../dto/create-tag.dto';
 import { UpdateTagDto } from '../dto/update-tag.dto';
+import { Role } from 'src/enum/role.enum';
+import { Roles } from 'src/decorators/role.decorator';
+import { Tag } from '../entities/tag.entity';
+import { Public } from 'src/decorators/public.decorator';
 
-@Controller('tags')
+@Controller('api')
 export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
 
-  @Post()
-  create(@Body() createTagDto: CreateTagDto) {
-    return this.tagsService.create(createTagDto);
+  // create new tags
+  @Roles(Role.Moderator)
+  @Post('tags/create')
+  async create(@Body() body: CreateTagDto): Promise<Tag> {
+    return await this.tagsService.create(body);
   }
 
-  @Get()
-  findAll() {
-    return this.tagsService.findAll();
+  // get all tags
+  @Public()
+  @Get('tags')
+  async findAll(): Promise<Tag[] | null> {
+    return await this.tagsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tagsService.findOne(+id);
+  // update tag
+  @Roles(Role.Moderator)
+  @Patch('tags/:tagID/update')
+  async findOne(@Param('tagID') tagID: string, body: UpdateTagDto): Promise<Tag> {
+    return await this.tagsService.update(tagID, body);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTagDto: UpdateTagDto) {
-    return this.tagsService.update(+id, updateTagDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tagsService.remove(+id);
+  // delete some tags
+  @Roles(Role.Moderator)
+  @Post('tags/:tagID/delete')
+  async remove(@Param('tagID') tagID: string): Promise<string> {
+    return await this.tagsService.remove(tagID);
   }
 }

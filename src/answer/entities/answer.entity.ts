@@ -3,6 +3,7 @@ import { v4 as uuidV4 } from 'uuid'
 import { User } from '../../users/entities/user.entity'
 import { Question } from '../../questions/entities/question.entity'
 import { Comment } from 'src/comments/entities/comment.entity'
+import { ReportAnswer } from 'src/reports/entities/report-answer.entity'
 
 @Entity()
 export class Answer {
@@ -21,7 +22,11 @@ export class Answer {
 
 	// relasi ke comment
 	@OneToMany(() => Comment, (comment) => comment.commentID)
-	commentID: Comment[]
+	comments: Comment[]
+
+	// relasi ke report
+	@OneToMany(() => ReportAnswer, (reportAnswer) => reportAnswer.reportedAnswerID)
+	reports: ReportAnswer[] 
 
 	@Column({ type: 'varchar' })
 	answerText: string
@@ -32,8 +37,8 @@ export class Answer {
 	@Column({ type: 'boolean', default: false })
 	verified: boolean
 
-	@Column({ type: 'boolean', default: false })
-	banned: boolean
+	@Column({ type: 'boolean', default: true })
+	isActive: boolean
 
 	@BeforeInsert()
 	generateInsert() {

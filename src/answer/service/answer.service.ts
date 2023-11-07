@@ -13,12 +13,17 @@ export class AnswerService {
 
   async findAllUserAnswer(userID: string): Promise<Answer[] | null> {
     try {
-      const answers = await this.answerRepository.findBy({ userID })
+      const answers = await this.answerRepository.find({ 
+        where: { 
+          isActive: true,
+          userID
+        } 
+      })
   
       return answers
 
     } catch (err) {
-      console.log(err.message)
+      return err.message
     }
   }
 
@@ -35,18 +40,23 @@ export class AnswerService {
       return answer;
 
     } catch (err) {
-      console.log(err)
+      return err.message
     }
   }
 
   async findAllAnswerForQuestion(questionID: string): Promise<Answer[] | null> {
     try {
-      const answer = this.answerRepository.findBy({ questionID })
+      const answer = this.answerRepository.find({ 
+        where: { 
+          questionID,
+          isActive: true
+        } 
+      })
 
       return answer
 
     } catch (err) {
-      console.log(err)
+      return err.message
     }
   }
 
@@ -54,19 +64,28 @@ export class AnswerService {
     try {
       const answer = await this.answerRepository.findOneBy({ answerID })
 
-      Object.assign(answer, body)
+      answer.answerText = body.answerText
 
       await this.answerRepository.save(answer)
 
       return answer;
 
     } catch (err) {
-      console.log(err)
+      return err.message
     }
 
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} answer`;
+  async remove(answerID: string): Promise<string> {
+    try {
+      const answer = await this.answerRepository.findOneById(answerID)
+
+      answer.isActive = false
+
+      return 'answer has been hide';
+
+    } catch (err) {
+      return err.message
+    }
   }
 }

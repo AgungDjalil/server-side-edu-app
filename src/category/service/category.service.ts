@@ -9,32 +9,64 @@ import { Repository } from 'typeorm';
 export class CategoryService {
   constructor(@InjectRepository(Category) private categoryRepository: Repository<Category>) {}
 
+  async update(userID: string, categoryID: string, body: UpdateCategoryDto): Promise<Category> {
+    try {
+      const category = await this.categoryRepository.findOne({
+        where: {
+          categoryID,
+          userID
+        }
+      })
+  
+      category.categoryName = body.categoryName
+  
+      await this.categoryRepository.save(category)
+  
+      return category;
+
+    } catch (err) {
+      return err.message
+    }
+  }
+
   async create(userID: string, body: CreateCategoryDto): Promise<Category | null> {
-    const category = this.categoryRepository.create({
-      userID,
-      categoryName: body.categoryName
-    })
+    try {
+      const category = this.categoryRepository.create({
+        userID,
+        categoryName: body.categoryName
+      })
+  
+      await this.categoryRepository.save(category);
+  
+      return category;
 
-    await this.categoryRepository.save(category);
-
-    return category;
+    } catch (err) {
+      return err.message;
+    }
   }
 
   async findAll(): Promise<Category[] | null> {
-    const categories = await this.categoryRepository.find()
+    const categories = await this.categoryRepository.find({
+      where: { 
+        isActive: true
+      }
+    })
 
     return categories;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
-  }
+  async remove(categoryID: string): Promise<string> {
+    try {
+      const category = await this.categoryRepository.findOneById(categoryID)
+  
+      category.isActive = false
+  
+      await this.categoryRepository.save(category)
+  
+      return 'category successfully hide';
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+    } catch (err) {
+      return err.message
+    }
   }
 }

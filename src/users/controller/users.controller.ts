@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Headers, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsersService } from '../service/users.service';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity'
@@ -7,6 +7,7 @@ import { UserDTO } from '../dto/user.dto';
 import { Public } from 'src/decorators/public.decorator';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
+import { CurrentUserID } from 'src/decorators/currentUserID';
 
 @Controller('api')
 @Serialize(UserDTO)
@@ -28,15 +29,15 @@ export class UsersController {
   }
 
   // route for edit user
-  @Patch('users/:userID/update')
-  update(@Param('id') id: string, @Body() body: UpdateUserDto) {
-    return this.usersService.update(+id, body);
+  @Patch('users/update')
+  async update(@CurrentUserID() userID: string, @Body() body: UpdateUserDto){
+    return await this.usersService.update(userID, body);
   }
 
   // route for delete user
   @Roles(Role.Admin, Role.Moderator)
   @Delete('users/:userID/delete')
-  remove(@Param('userID') userID: string) {
-    return this.usersService.remove(userID);
+  async remove(@Param('userID') userID: string): Promise<boolean | string> {
+    return await this.usersService.remove(userID);
   }
 }

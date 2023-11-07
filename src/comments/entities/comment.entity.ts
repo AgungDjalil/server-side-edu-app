@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany, JoinTable, BeforeInsert, ManyToOne } from 'typeorm'
+import { Entity, PrimaryColumn, Column, OneToMany, ManyToMany, JoinTable, BeforeInsert, ManyToOne, JoinColumn } from 'typeorm'
 import { v4 as uuidV4 } from 'uuid'
 import { User } from '../../users/entities/user.entity'
 import { Question } from '../../questions/entities/question.entity'
@@ -10,15 +10,18 @@ export class Comment {
 	commentID: string
 
 	// relasi ke user
-	@ManyToOne(() => User, (user) => user.userID)
+	@ManyToOne(() => User, (user) => user.comments)
+	@JoinColumn({ name: 'userID' })
 	userID: string
 
 	// relasi ke question
-	@ManyToOne(() => Question, (question) => question.commentID)
+	@ManyToOne(() => Question, (question) => question.comments)
+	@JoinColumn({ name: 'questionID' })
     questionID: string
 
 	// relasi ke answer
-    @ManyToOne(() => Answer, (answer) => answer.answerID)
+    @ManyToOne(() => Answer, (answer) => answer.comments)
+	@JoinColumn({ name: 'answerID' })
     answerID: string
 
 	@Column({ type: 'varchar' }) 
@@ -27,8 +30,8 @@ export class Comment {
 	@Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
 	createdAt: Date
 
-	@Column({ type: 'boolean', default: false})
-	banned: boolean
+	@Column({ type: 'boolean', default: true})
+	isActive: boolean
 
 	@BeforeInsert()
 	generateInsert() {

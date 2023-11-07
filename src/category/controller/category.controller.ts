@@ -5,6 +5,10 @@ import { UpdateCategoryDto } from '../dto/update-category.dto';
 import { Category } from '../entities/category.entity';
 import Serialize from 'src/interceptors/serialize.interceptor';
 import { CategoryDTO } from '../dto/category.dto';
+import { Roles } from 'src/decorators/role.decorator';
+import { Role } from 'src/enum/role.enum';
+import { CurrentUserID } from 'src/decorators/currentUserID';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('api')
 @Serialize(CategoryDTO)
@@ -12,28 +16,37 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   // create a new category
-  @Post('category/:userID/create')
+  @Roles(Role.Moderator)
+  @Post('category/user/create')
   async create(
     @Body() body: CreateCategoryDto, 
-    @Param('userID') userID: string
+    @CurrentUserID() userID: string
   ): Promise<Category | null> {
     return await this.categoryService.create(userID, body);
   }
 
   // get all categories
+  @Public()
   @Get('category')
   async findAll(): Promise<Category[] | null> {
     return await this.categoryService.findAll();
   }
 
-  // 
+  // route for edit category
+  @Roles(Role.Moderator)
   @Patch('category/:categoryID/update')
-  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoryService.update(+id, updateCategoryDto);
+  async update(
+    @CurrentUserID() userID: string, 
+    @Param('categoryID') categoryID: string, 
+    @Body() body: UpdateCategoryDto
+  ): Promise<Category> {
+    return await this.categoryService.update(userID, categoryID, body);
   }
 
+  // route for delete category
+  @Roles(Role.Moderator)
   @Delete('category/:categoryId/delete')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(+id);
+  async remove(@Param('categoryID') categoryID: string): Promise<string> {
+    return await this.categoryService.remove(categoryID);
   }
 }

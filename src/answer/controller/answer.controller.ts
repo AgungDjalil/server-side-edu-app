@@ -5,6 +5,10 @@ import { UpdateAnswerDto } from '../dto/update-answer.dto';
 import { Answer } from '../entities/answer.entity';
 import Serialize from 'src/interceptors/serialize.interceptor';
 import { AnswerDTO } from '../dto/answer.dto';
+import { Public } from 'src/decorators/public.decorator';
+import { CurrentUserID } from 'src/decorators/currentUserID';
+import { Roles } from 'src/decorators/role.decorator';
+import { Role } from 'src/enum/role.enum';
 
 @Controller('api')
 @Serialize(AnswerDTO)
@@ -12,21 +16,22 @@ export class AnswerController {
   constructor(private readonly answerService: AnswerService) {}
 
   // get all answer based on question
+  @Public()
   @Get('questions/:questionID/answer')
   findAllAnswerBasedQuestion(@Param('questionID') questionID: string): Promise<Answer[] | null> {
     return this.answerService.findAllAnswerForQuestion(questionID)
   }
   
   // get all users answer
-  @Get('users/:userID/answer')
-  async findAllAnswer(@Param('userID') userID: string): Promise<Answer[] | null> {
+  @Get('answer/user')
+  async findAllAnswer(@CurrentUserID() userID: string): Promise<Answer[] | null> {
     return await this.answerService.findAllUserAnswer(userID)
   }
 
   // for create new answer
-  @Post('answer/:userID/create/:questionID')
+  @Post('answer/user/create/:questionID')
   create(
-    @Param('userID') userID: string,
+    @CurrentUserID() userID: string,
     @Param('questionID') questionID: string,
     @Body() body: CreateAnswerDto
   ): Promise<Answer | null> {
@@ -42,8 +47,9 @@ export class AnswerController {
   }
 
   // delete answer
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.answerService.remove(+id);
+  @Roles(Role.Admin)
+  @Delete('answer/:answerID/delete')
+  async remove(@Param('answerID') answerID: string): Promise<string> {
+    return this.answerService.remove(answerID);
   }
 }

@@ -22,7 +22,7 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) 
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('must login first');
 
     try {
       const payload = await this.jwtService.verifyAsync(
@@ -32,10 +32,10 @@ export class AuthGuard implements CanActivate {
         }
       );
 
-      request['user'] = payload;
+      request.user = payload;
 
     } catch {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('must login first');
     }
     return true;
   }

@@ -7,6 +7,9 @@ import { Comment } from 'src/comments/entities/comment.entity'
 import { Category } from 'src/category/entities/category.entity'
 import { Tag } from 'src/tags/entities/tag.entity'
 import { ConfigModule } from '@nestjs/config'
+import { ReportUser } from 'src/reports/entities/report-user.entity'
+import { ReportQuestion } from 'src/reports/entities/report-question.entity'
+import { ReportAnswer } from 'src/reports/entities/report-answer.entity'
 
 @Module({
     imports: [
@@ -24,7 +27,10 @@ import { ConfigModule } from '@nestjs/config'
                 Answer,
                 Comment,
                 Category,
-                Tag
+                Tag,
+                ReportUser,
+                ReportQuestion,
+                ReportAnswer
             ],
             synchronize: true,
         })

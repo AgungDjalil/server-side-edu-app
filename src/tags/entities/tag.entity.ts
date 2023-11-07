@@ -1,7 +1,15 @@
 import { Category } from "src/category/entities/category.entity";
 import { Question } from "src/questions/entities/question.entity";
 import { User } from "src/users/entities/user.entity";
-import { BeforeInsert, Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
+import { 
+    BeforeInsert, 
+    Column, 
+    Entity, 
+    JoinColumn, 
+    ManyToOne, 
+    OneToMany, 
+    PrimaryColumn 
+} from "typeorm";
 import { v4 as uuidV4 } from 'uuid'
 
 @Entity()
@@ -15,20 +23,22 @@ export class Tag {
     userID: string;
 
     // relasi ke category
-    @ManyToMany(() => Category, (category) => category.tags)
-    @JoinTable()
-    categories: Category[];
+    @ManyToOne(() => Category, (category) => category.tags)
+    @JoinColumn({ name: 'categoryID' })
+    categoryID: string;
 
     // relasi ke question 
-    @ManyToMany(() => Question, (question) => question.tags)
-    @JoinTable()
-    questions: Category[];
+    @OneToMany(() => Question, (question) => question.tagID)
+    questions: Question[];
 
     @Column({ type: 'varchar' })
     tagName: string;
 
     @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
     createAt: Date;
+
+    @Column({ type: 'boolean', default: true })
+    isActive: boolean;
 
     @BeforeInsert()
 	generateID(): void {

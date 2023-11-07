@@ -12,6 +12,7 @@ import { Answer } from "src/answer/entities/answer.entity"
 import { Tag } from "src/tags/entities/tag.entity"
 import { Category } from "src/category/entities/category.entity"
 import { Role } from "src/enum/role.enum"
+import { ReportUser } from "src/reports/entities/report-user.entity"
 
 @Entity()
 export class User {
@@ -38,6 +39,14 @@ export class User {
 	@OneToMany(() => Category, (category) => category.userID)
 	categories: Category[]
 
+	// relasi ke report yang di report
+	@OneToMany(() => ReportUser, (report) => report.reportedUser)
+	reportedUsers: ReportUser[]
+
+	// relasi ke report (yang membuat report)
+	@OneToMany(() => ReportUser, (report) => report.reportingUser)
+	reports: ReportUser[]
+
 	@Column({ type: 'varchar', unique: true })
 	username: string
 
@@ -56,11 +65,14 @@ export class User {
 	@Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
     joinAt: Date;
 
-	@Column({ type: 'date', nullable: true})
-	suspend: Date
+	@Column({ type: 'boolean', default: false })
+	isSuspend: boolean
 
-	@Column({ type: 'boolean', default: false})
-	banned: boolean
+	@Column({ type: 'date', nullable: true})
+	suspensionEndDate: string
+
+	@Column({ type: 'boolean', default: true})
+	isActive: boolean
 
 	@BeforeInsert()
 	generateInsert() {

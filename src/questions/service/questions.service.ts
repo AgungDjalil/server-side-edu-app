@@ -18,28 +18,45 @@ export class QuestionsService {
       return questions
 
     } catch (err) {
-      console.log(err.message)
+      return err.message
     }
   }
 
   async create(body: CreateQuestionDto, userID: string): Promise<Question | null> {
     try {
-      const question = this.questionRepository.create({
-        questionText: body.questionText,
-        userID
-      })
+      if(!body.categoryID) {
+        const question = this.questionRepository.create({
+          questionText: body.questionText,
+          userID,
+          categoryID: body.categoryID
+        })
+  
+        await this.questionRepository.save(question)
+  
+        return question
 
-      await this.questionRepository.save(question)
-
-      return question
+      } else if (body.categoryID) {
+        const question = this.questionRepository.create({
+          questionText: body.questionText,
+          userID,
+          categoryID: body.categoryID,
+          tagID: body.tagID
+        })
+  
+        await this.questionRepository.save(question)
+  
+        return question        
+      }
 
     } catch (err) {
-      console.log(err)
+      return err.message
     }
   }
 
   async findAll(): Promise<Question[] | null> {
-    const question = await this.questionRepository.find()
+    const question = await this.questionRepository.find({
+      where: { isActive: true }
+    })
     return question;
   }
 
@@ -52,7 +69,7 @@ export class QuestionsService {
       return question;
 
     } catch (err) {
-      console.log(err.message)
+      return err.message
     }
   }
 
@@ -63,32 +80,31 @@ export class QuestionsService {
         userID
       })
 
-      Object.assign(question, body)
+      question.questionText = body.questionText
 
       await this.questionRepository.save(question)
       
       return question
 
     } catch (err) { 
-      console.log(err.message)
+      return err.message
     }
   }
 
-  // async remove(questionID: string) {
-  //   try {
-  //     const question = await this.questionRepository.findOneBy({
-  //       questionID
-  //     })
+  async remove(questionID: string) {
+    try {
+      const question = await this.questionRepository.findOneBy({
+        questionID
+      })
 
-  //     Object.assign(question, )
+      question.isActive = false
 
-  //     await this.questionRepository.save(question)
-      
-  //     return question
+      await this.questionRepository.save(question)
 
-  //     return `This action removes a #${} question`;
-  //   } catch (err) {
+      return 'succes to delete user';
 
-  //   }
-  // }
+    } catch (err) {
+      return err.message
+    }
+  }
 }

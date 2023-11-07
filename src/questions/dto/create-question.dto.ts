@@ -1,9 +1,13 @@
-import { IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 
 export class CreateQuestionDto {
     @IsString()
     questionText: string;
 
     @IsString()
-    category: string;
+    categoryID: string;
+
+    @IsString()
+    @IsOptional()
+    tagID: string;
 }

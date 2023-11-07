@@ -8,8 +8,31 @@ import { User } from '../../users/entities/user.entity'
 export class UsersService {
   constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
+  async isUserSuspended(userId: string): Promise<boolean> {
+    const user = await this.userRepository.findOneById(userId);
+
+    const currentDate = new Date()
+    const year = currentDate.getFullYear()
+    const month = currentDate.getMonth()
+    const day = currentDate.getDate()
+
+    if (
+        user && user.isSuspend 
+        && user.suspensionEndDate 
+        && user.suspensionEndDate !== `${year}-${month}-${day}`
+      )
+      return true;
+    
+    return false;
+  }
+
   async findAll(): Promise<User[] | null> {
-    const users = await this.userRepository.find()
+    const users = await this.userRepository.find({
+      where: { 
+        isActive: true,
+        isSuspend: false
+      }
+    })
 
     if(!users)
       throw new NotFoundException("can't find any users");
@@ -27,16 +50,38 @@ export class UsersService {
       return user;
 
     } catch (err) {
-      console.log(err.message)
+      return err.message
     }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(userID: string, body: UpdateUserDto): Promise<User |null | string> {
+    try {
+      const user = await this.userRepository.findOneById(userID);
+
+      user.username = body.username;
+
+      await this.userRepository.save(user)
+
+      return user;
+
+    } catch (err) {
+      return err.message
+    }
   }
 
-  remove(userID: string) {
-    return ;
+  async remove(userID: string): Promise<boolean | string> {
+    try {
+      const user = await this.userRepository.findOneById(userID)
+      
+      user.isActive = false
+
+      await this.userRepository.save(user)
+
+      return true;
+
+    } catch (err) {
+      return err.message
+    }
   }
 }
  
