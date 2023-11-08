@@ -8,5 +8,5 @@ export class AnswerDTO {
     createdAt: Date;
 
     @Expose()
-    verified: boolean;
+    isVerified: boolean;
 }

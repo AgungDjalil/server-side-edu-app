@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreateReportDto } from '../dto/create-report.dto';
+import { CreateReportDto } from '../../dto/create-report.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ReportUser } from '../entities/report-user.entity';
+import { ReportUser } from '../../entities/report-user/report-user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -10,9 +10,9 @@ export class ReportsUserService {
     @InjectRepository(ReportUser) private reportRepositoryUser: Repository<ReportUser>
   ) {}
 
-  async removeFromUserReportTable(userID: string): Promise<boolean> {
+  async removeFromUserReportTable(reportID: string): Promise<boolean> {
     try {
-      const user = await this.reportRepositoryUser.findOneById(userID);
+      const user = await this.reportRepositoryUser.findOneById(reportID);
   
       user.isActive = false;
   

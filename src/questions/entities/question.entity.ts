@@ -13,7 +13,7 @@ import { Answer } from 'src/answer/entities/answer.entity'
 import { Comment } from 'src/comments/entities/comment.entity'
 import { Category } from 'src/category/entities/category.entity'
 import { Tag } from 'src/tags/entities/tag.entity'
-import { ReportQuestion } from 'src/reports/entities/report-question.entity'
+import { ReportQuestion } from 'src/reports/entities/report-question/report-question.entity'
 
 @Entity()
 export class Question {

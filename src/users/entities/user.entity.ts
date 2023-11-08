@@ -12,7 +12,7 @@ import { Answer } from "src/answer/entities/answer.entity"
 import { Tag } from "src/tags/entities/tag.entity"
 import { Category } from "src/category/entities/category.entity"
 import { Role } from "src/enum/role.enum"
-import { ReportUser } from "src/reports/entities/report-user.entity"
+import { ReportUser } from "src/reports/entities/report-user/report-user.entity"
 
 @Entity()
 export class User {

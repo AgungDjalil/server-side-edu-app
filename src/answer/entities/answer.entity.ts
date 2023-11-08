@@ -3,7 +3,7 @@ import { v4 as uuidV4 } from 'uuid'
 import { User } from '../../users/entities/user.entity'
 import { Question } from '../../questions/entities/question.entity'
 import { Comment } from 'src/comments/entities/comment.entity'
-import { ReportAnswer } from 'src/reports/entities/report-answer.entity'
+import { ReportAnswer } from 'src/reports/entities/report-answer/report-answer.entity'
 
 @Entity()
 export class Answer {

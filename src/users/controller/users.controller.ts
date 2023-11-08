@@ -44,9 +44,13 @@ export class UsersController {
 
   // route for suspend users
   @Roles(Role.Admin)
-  @Post('users/:userID/suspend') 
-  async suspend(@Param('userID') userID: string, @Body() body: SuspendUserDTO) {
-    return await this.usersService.suspend(userID, body)
+  @Post('users/:userID/suspend/:reportID') 
+  async suspend(
+    @Param('userID') userID: string, 
+    @Param('reportID') reportID: string, 
+    @Body() body: any
+  ) {
+    return await this.usersService.suspend(userID, reportID, body)
   }
 
   // route for delete user

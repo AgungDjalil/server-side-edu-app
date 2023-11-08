@@ -13,7 +13,6 @@ export class TagsService {
     try {
       const tag = this.tagRepository.create({ 
         tagName: body.tagName,
-        categoryID: body.categoryID
       })
   
       await this.tagRepository.save(tag)
@@ -45,7 +44,6 @@ export class TagsService {
       const tag = await this.tagRepository.findOneById(tagID);
 
       tag.tagName = body.tagName
-      tag.categoryID = body.categoryID
 
       await this.tagRepository.save(tag)
       
@@ -64,7 +62,7 @@ export class TagsService {
 
       await this.tagRepository.save(tag)
 
-      return 'user successfully hide';
+      return 'tag successfully hide';
 
     } catch (err) {
       return err.message

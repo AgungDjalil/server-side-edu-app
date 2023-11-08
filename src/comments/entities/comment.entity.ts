@@ -3,6 +3,7 @@ import { v4 as uuidV4 } from 'uuid'
 import { User } from '../../users/entities/user.entity'
 import { Question } from '../../questions/entities/question.entity'
 import { Answer } from 'src/answer/entities/answer.entity'
+import { ReportComment } from 'src/reports/entities/report-comment/report-comment.entity'
 
 @Entity()
 export class Comment {
@@ -23,6 +24,10 @@ export class Comment {
     @ManyToOne(() => Answer, (answer) => answer.comments)
 	@JoinColumn({ name: 'answerID' })
     answerID: string
+
+	// relasi ke report
+	@OneToMany(() => ReportComment, (report) => report.reportedCommentID)
+	reports: ReportComment[];
 
 	@Column({ type: 'varchar' }) 
 	commentText: string

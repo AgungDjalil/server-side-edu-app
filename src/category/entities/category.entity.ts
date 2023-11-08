@@ -18,10 +18,6 @@ export class Category {
     @OneToMany(() => Question, (question) => question.categoryID)
     questions: Question[]
 
-    // relasi ke tag
-    @OneToMany(() => Tag, (tag) => tag.questions)
-    tags: Tag[]
-
     @Column({ type: 'varchar'})
     categoryName: string;
 

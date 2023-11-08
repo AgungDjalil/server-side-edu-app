@@ -6,6 +6,8 @@ import { Public } from 'src/decorators/public.decorator';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
 import { User } from 'src/users/entities/user.entity';
+import Serialize from 'src/interceptors/serialize.interceptor';
+import { UserDTO } from 'src/users/dto/user.dto';
 
 @Controller('api')
 export class AuthController {
@@ -20,12 +22,14 @@ export class AuthController {
 
   // route for make user with role admin
   @Roles(Role.Admin)
+  @Serialize(UserDTO)
   @Post('/auth/register/admin')
   async registerAdmin(@Body() body: CreateUserDTO): Promise<User> {
     return await this.authService.createAdmin(body)
   }
 
   // route for make user with role moderator
+  @Serialize(UserDTO)
   @Roles(Role.Admin)
   @Post('/auth/register/moderator')
   async registerModerator(@Body() body: CreateUserDTO): Promise<User> {
@@ -34,6 +38,7 @@ export class AuthController {
 
   // register for new user
   @Public()
+  @Serialize(UserDTO)
   @Post('auth/register')
   async register(@Body() body: CreateUserDTO): Promise<User | null> {
     return await this.authService.create(body);

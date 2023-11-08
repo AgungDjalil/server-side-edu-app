@@ -4,7 +4,7 @@ import { UpdateQuestionDto } from '../dto/update-question.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Question } from '../entities/question.entity';
 import { Repository } from 'typeorm';
-import { ReportsQuestionService } from 'src/reports/service/reports-question.service';
+import { ReportsQuestionService } from 'src/reports/service/question/reports-question.service';
 
 @Injectable()
 export class QuestionsService {
@@ -26,7 +26,12 @@ export class QuestionsService {
 
   async findAllUserQuestion(userID: string): Promise<Question[] | null> {
     try {
-      const questions = await this.questionRepository.findBy({ userID })
+      const questions = await this.questionRepository.find({
+        where: {
+          userID,
+          isActive: true
+        } 
+      })
   
       return questions
 
@@ -88,9 +93,11 @@ export class QuestionsService {
 
   async update(questionID: string, userID: string, body: UpdateQuestionDto): Promise<Question> {
     try {
-      const question = await this.questionRepository.findOneBy({
-        questionID,
-        userID
+      const question = await this.questionRepository.findOne({
+        where: {
+          questionID,
+          userID
+        }
       })
 
       question.questionText = body.questionText
@@ -104,7 +111,7 @@ export class QuestionsService {
     }
   }
 
-  async remove(questionID: string) {
+  async remove(questionID: string, reportID: string) {
     try {
       const question = await this.questionRepository.findOneBy({
         questionID
@@ -112,7 +119,7 @@ export class QuestionsService {
 
       question.isActive = false
 
-      const isSuccess = await this.reportsQuestionService.removeFromQuestionReportTable(questionID)
+      const isSuccess = await this.reportsQuestionService.removeFromQuestionReportTable(reportID)
 
       if(isSuccess) {
         await this.questionRepository.save(question)

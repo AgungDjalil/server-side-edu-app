@@ -17,6 +17,15 @@ export class QuestionsController {
     private readonly questionsService: QuestionsService
   ) {}
 
+  // create questions
+  @Post('questions/create')
+  async create(
+      @Body() createQuestionDto: CreateQuestionDto,
+      @CurrentUserID() userID: string
+    ): Promise<Question | null> {
+    return await this.questionsService.create(createQuestionDto, userID);
+  }
+
   // get all questions 
   @Roles(Role.Admin)
   @Get('questions/admin')
@@ -44,17 +53,8 @@ export class QuestionsController {
     return await this.questionsService.findOne(questionID);
   }
 
-  // create questions
-  @Post('questions/create')
-  async create(
-      @Body() createQuestionDto: CreateQuestionDto,
-      @CurrentUserID() userID: string
-    ): Promise<Question | null> {
-    return await this.questionsService.create(createQuestionDto, userID);
-  }
-
   // route for editing questions
-  @Patch('questions/:questionID/:userID/update')
+  @Patch('questions/:questionID/update')
   async update(
     @CurrentUserID() userID: string,
     @Param('questionID') questionID: string, 
@@ -64,8 +64,11 @@ export class QuestionsController {
   }
 
   @Roles(Role.Admin)
-  @Delete('questions/:questionID/delete')
-  remove(@Param('questionID') questionID: string) {
-    return this.questionsService.remove(questionID);
+  @Delete('questions/:questionID/delete/:reportID')
+  remove(
+    @Param('questionID') questionID: string, 
+    @Param('reportID') reportID: string
+  ) {
+    return this.questionsService.remove(questionID, reportID);
   }
 }

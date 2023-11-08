@@ -22,11 +22,6 @@ export class Tag {
     @JoinColumn({ name: 'userID'})
     userID: string;
 
-    // relasi ke category
-    @ManyToOne(() => Category, (category) => category.tags)
-    @JoinColumn({ name: 'categoryID' })
-    categoryID: string;
-
     // relasi ke question 
     @OneToMany(() => Question, (question) => question.tagID)
     questions: Question[];

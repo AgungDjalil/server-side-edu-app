@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { CurrentUserID } from "src/decorators/currentUserID";
-import { CreateReportDto } from "../dto/create-report.dto";
-import { ReportAnswer } from "../entities/report-answer.entity";
-import { ReportsAnswerService } from "../service/reports-answer.service";
+import { CreateReportDto } from "../../dto/create-report.dto";
+import { ReportAnswer } from "../../entities/report-answer/report-answer.entity";
+import { ReportsAnswerService } from "../../service/answer/reports-answer.service";
 import { Roles } from "src/decorators/role.decorator";
 import { Role } from "src/enum/role.enum";
 
@@ -18,7 +18,7 @@ export class ReportsAnswerController {
     }
 
     // route for report answer
-    @Post('reports/:reportedAnswerID/create')
+    @Post('reports/answer/:reportedAnswerID/create')
     async createReportForAnswer(
         @CurrentUserID() userID: string,
         @Param('reportedAnswerID') reportedAnswerID: string,

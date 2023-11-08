@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { ReportQuestion } from "../entities/report-question.entity";
-import { CreateReportDto } from "../dto/create-report.dto";
+import { ReportQuestion } from "../../entities/report-question/report-question.entity";
+import { CreateReportDto } from "../../dto/create-report.dto";
 
 @Injectable()
 export class ReportsQuestionService {
@@ -10,9 +10,9 @@ export class ReportsQuestionService {
         @InjectRepository(ReportQuestion) private reportRepositoryQuestion: Repository<ReportQuestion>
     ) { }
 
-    async removeFromQuestionReportTable(questionID: string): Promise<boolean> {
+    async removeFromQuestionReportTable(reportID: string): Promise<boolean> {
         try {
-          const user = await this.reportRepositoryQuestion.findOneById(questionID);
+          const user = await this.reportRepositoryQuestion.findOneById(reportID);
       
           user.isActive = false;
       
@@ -25,7 +25,7 @@ export class ReportsQuestionService {
         }
     }
 
-    async findAllReortQuestions(): Promise<ReportQuestion[]> {
+    async findAllReportQuestions(): Promise<ReportQuestion[]> {
         try {
             const question = await this.reportRepositoryQuestion.find({
                 where: { isActive: true }

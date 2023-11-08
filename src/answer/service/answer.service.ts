@@ -4,11 +4,13 @@ import { UpdateAnswerDto } from '../dto/update-answer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Answer } from '../entities/answer.entity';
 import { Repository } from 'typeorm';
+import { ReportsAnswerService } from 'src/reports/service/answer/reports-answer.service';
 
 @Injectable()
 export class AnswerService {
   constructor(
-    @InjectRepository(Answer) private answerRepository: Repository<Answer>
+    @InjectRepository(Answer) private answerRepository: Repository<Answer>,
+    private readonly reportAnswerService: ReportsAnswerService
   ) {}
 
   async find(): Promise<Answer[] | null> {
@@ -28,6 +30,8 @@ export class AnswerService {
 
       answer.isVerified = true;
 
+      await this.answerRepository.save(answer)
+      
       return answer
 
     } catch (err) {
@@ -113,16 +117,23 @@ export class AnswerService {
 
   }
 
-  async remove(answerID: string): Promise<string> {
+  async remove(answerID: string, reportID: string): Promise<string> {
     try {
       const answer = await this.answerRepository.findOneById(answerID)
 
       answer.isActive = false
 
-      return 'answer has been hide';
+      const isSuccess = await this.reportAnswerService.removeFromAnswerReportTable(reportID)
+
+      if(isSuccess) {
+
+        await this.answerRepository.save(answer)
+
+        return 'answer has been hide';
+      }
 
     } catch (err) {
-      return err.message
+      return 'err.message'
     }
   }
 }

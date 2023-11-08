@@ -58,7 +58,7 @@ export class CategoryService {
   async remove(categoryID: string): Promise<string> {
     try {
       const category = await this.categoryRepository.findOneById(categoryID)
-  
+      
       category.isActive = false
   
       await this.categoryRepository.save(category)

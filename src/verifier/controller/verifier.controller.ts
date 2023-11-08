@@ -3,8 +3,11 @@ import { Answer } from 'src/answer/entities/answer.entity';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
 import { AnswerService } from 'src/answer/service/answer.service';
+import Serialize from 'src/interceptors/serialize.interceptor';
+import { AnswerDTO } from 'src/answer/dto/answer.dto';
 
 @Controller('api')
+@Serialize(AnswerDTO)
 export class VerifierController {
   constructor(private readonly answerService: AnswerService) {}
 

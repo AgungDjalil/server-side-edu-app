@@ -48,8 +48,11 @@ export class CommentsController {
 
   // delete comment
   @Roles(Role.Admin)
-  @Delete('comments/:commentID/delete')
-  remove(@Param('commentID') commentID: string) {
-    return this.commentsService.remove(commentID);
+  @Delete('comments/:commentID/delete/:reportID')
+  remove(
+    @Param('commentID') commentID: string,
+    @Param('reportID') reportID: string
+  ) {
+    return this.commentsService.remove(commentID, reportID);
   }
 }

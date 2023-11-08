@@ -3,10 +3,10 @@ import { QuestionsService } from './service/questions.service';
 import { QuestionsController } from './controller/questions.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Question } from './entities/question.entity';
-import { AnswerService } from 'src/answer/service/answer.service';
 import { Answer } from 'src/answer/entities/answer.entity';
-import { ReportsQuestionService } from 'src/reports/service/reports-question.service';
-import { ReportQuestion } from 'src/reports/entities/report-question.entity';
+import { ReportsQuestionService } from 'src/reports/service/question/reports-question.service';
+import { ReportQuestion } from 'src/reports/entities/report-question/report-question.entity';
+import { ReportAnswer } from 'src/reports/entities/report-answer/report-answer.entity';
 
 @Module({
   imports: [
@@ -18,8 +18,7 @@ import { ReportQuestion } from 'src/reports/entities/report-question.entity';
   ],
   controllers: [QuestionsController],
   providers: [
-    QuestionsService, 
-    AnswerService,
+    QuestionsService,
     ReportsQuestionService
   ],
 })

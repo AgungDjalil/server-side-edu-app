@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { CreateReportDto } from '../dto/create-report.dto';
-import { UpdateReportDto } from '../dto/update-report.dto';
+import { CreateReportDto } from '../../dto/create-report.dto';
+import { UpdateReportDto } from '../../dto/update-report.dto';
 import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
 import { CurrentUserID } from 'src/decorators/currentUserID';
-import { ReportUser } from '../entities/report-user.entity';
-import { ReportsUserService } from '../service/reports-user.service';
+import { ReportUser } from '../../entities/report-user/report-user.entity';
+import { ReportsUserService } from '../../service/user/reports-user.service';
 
 @Controller('api')
 export class ReportsUserController {

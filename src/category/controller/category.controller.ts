@@ -45,7 +45,7 @@ export class CategoryController {
 
   // route for delete category
   @Roles(Role.Moderator)
-  @Delete('category/:categoryId/delete')
+  @Delete('category/:categoryID/delete')
   async remove(@Param('categoryID') categoryID: string): Promise<string> {
     return await this.categoryService.remove(categoryID);
   }

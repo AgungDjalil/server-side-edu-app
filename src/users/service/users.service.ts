@@ -4,7 +4,7 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { Repository } from 'typeorm'
 import { User } from '../../users/entities/user.entity'
 import { SuspendUserDTO } from '../dto/suspend-user.dto';
-import { ReportsUserService } from 'src/reports/service/reports-user.service';
+import { ReportsUserService } from 'src/reports/service/user/reports-user.service';
 
 @Injectable()
 export class UsersService {
@@ -24,7 +24,7 @@ export class UsersService {
     }
   }
 
-  async suspend(userID: string, body: SuspendUserDTO) {
+  async suspend(userID: string, reportID: string, body: any) {
     try {
       const user = await this.userRepository.findOneById(userID)
       
@@ -32,7 +32,7 @@ export class UsersService {
 
       user.isSuspend = true
       
-      const isSucces = await this.reportsUserService.removeFromUserReportTable(userID)
+      const isSucces = await this.reportsUserService.removeFromUserReportTable(reportID)
       
       if(isSucces) {
         await this.userRepository.save(user)
@@ -40,7 +40,10 @@ export class UsersService {
         return 'succes to suspend user'
       }
 
+      return false
+
     } catch (err) {
+      console.log(err)
       return err.message
     }
   }

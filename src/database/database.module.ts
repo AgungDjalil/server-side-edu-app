@@ -7,9 +7,10 @@ import { Comment } from 'src/comments/entities/comment.entity'
 import { Category } from 'src/category/entities/category.entity'
 import { Tag } from 'src/tags/entities/tag.entity'
 import { ConfigModule } from '@nestjs/config'
-import { ReportUser } from 'src/reports/entities/report-user.entity'
-import { ReportQuestion } from 'src/reports/entities/report-question.entity'
-import { ReportAnswer } from 'src/reports/entities/report-answer.entity'
+import { ReportUser } from 'src/reports/entities/report-user/report-user.entity'
+import { ReportQuestion } from 'src/reports/entities/report-question/report-question.entity'
+import { ReportAnswer } from 'src/reports/entities/report-answer/report-answer.entity'
+import { ReportComment } from 'src/reports/entities/report-comment/report-comment.entity'
 
 @Module({
     imports: [
@@ -30,7 +31,8 @@ import { ReportAnswer } from 'src/reports/entities/report-answer.entity'
                 Tag,
                 ReportUser,
                 ReportQuestion,
-                ReportAnswer
+                ReportAnswer,
+                ReportComment
             ],
             synchronize: true,
         })

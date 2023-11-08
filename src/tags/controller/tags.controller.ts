@@ -28,7 +28,7 @@ export class TagsController {
   // update tag
   @Roles(Role.Moderator)
   @Patch('tags/:tagID/update')
-  async findOne(@Param('tagID') tagID: string, body: UpdateTagDto): Promise<Tag> {
+  async findOne(@Param('tagID') tagID: string,@Body() body: UpdateTagDto): Promise<Tag> {
     return await this.tagsService.update(tagID, body);
   }
 

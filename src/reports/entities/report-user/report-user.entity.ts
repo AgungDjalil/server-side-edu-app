@@ -5,19 +5,19 @@ import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } fr
 import { v4 as uuidV4 } from 'uuid'
 
 @Entity()
-export class ReportQuestion {
+export class ReportUser {
     @PrimaryColumn()
     reportID: string;
 
+    // Relasi ke pengguna yang dilaporkan
+    @ManyToOne(() => User, (user) => user.reportedUsers)
+    @JoinColumn({ name: 'reportedUserID' })
+    reportedUser: string;
+
     // Relasi ke pengguna yang membuat laporan
     @ManyToOne(() => User, (user) => user.reports)
-    @JoinColumn({ name: 'reportingUserID' }) // Ubah nama kolom ke 'reportingUserID'
+    @JoinColumn({ name: 'reportingUserID' })
     reportingUser: string;
-
-    // relasi ke question
-    @ManyToOne(() => Question, (question) => question.reports)
-    @JoinColumn({ name: 'questionID' })
-    reportedQuestionID: string;
 
     @Column({ type: 'varchar' })
     reportMessage: string;

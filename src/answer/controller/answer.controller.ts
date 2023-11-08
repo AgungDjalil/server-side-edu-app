@@ -55,8 +55,11 @@ export class AnswerController {
 
   // delete answer
   @Roles(Role.Admin)
-  @Delete('answer/:answerID/delete')
-  async remove(@Param('answerID') answerID: string): Promise<string> {
-    return this.answerService.remove(answerID);
+  @Delete('answer/:answerID/delete/:reportID')
+  async remove(
+    @Param('answerID') answerID: string,
+    @Param('reportID') reportID: string
+  ): Promise<string> {
+    return this.answerService.remove(answerID, reportID);
   }
 }
