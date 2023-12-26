@@ -27,12 +27,13 @@ export class QuestionsService {
   async findAllUserQuestion(userID: string): Promise<Question[] | null> {
     try {
       const questions = await this.questionRepository.find({
-        where: {
-          userID,
-          isActive: true
-        } 
+          where: {
+            userID,
+            isActive: true
+          },
+          relations: ['categoryID', 'tagID']
       })
-  
+
       return questions
 
     } catch (err) {
@@ -73,21 +74,23 @@ export class QuestionsService {
 
   async findAll(): Promise<Question[] | null> {
     const question = await this.questionRepository.find({
-      where: { isActive: true }
+      where: { isActive: true },
+      relations: ['categoryID', 'tagID']
     })
     return question;
   }
 
   async findOne(questionID: string): Promise<Question | null> {
     try {
-      const question = await this.questionRepository.findOneBy({
-        questionID
+      const question = await this.questionRepository.findOne({
+        where: { questionID },
+        relations: ['categoryID', 'tagID']
       })
-
+      
       return question;
 
     } catch (err) {
-      return err.message
+      throw err
     }
   }
 
@@ -101,6 +104,8 @@ export class QuestionsService {
       })
 
       question.questionText = body.questionText
+      question.categoryID = body.category
+      question.tagID = body.tag
 
       await this.questionRepository.save(question)
       

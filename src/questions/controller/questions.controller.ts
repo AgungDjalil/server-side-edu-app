@@ -11,7 +11,7 @@ import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
 
 @Controller('api')
-@Serialize(QuestionDTO)
+// @Serialize(QuestionDTO)
 export class QuestionsController {
   constructor(
     private readonly questionsService: QuestionsService
@@ -34,8 +34,9 @@ export class QuestionsController {
   }
 
   // get all users question
-  @Get('questions/user')
-  async findAllQuestion(@CurrentUserID() userID: string): Promise<Question[] | null> {
+  @Public()
+  @Get('questions/:userID/user')
+  async findAllQuestion(@Param('userID') userID: string): Promise<Question[] | null> {
     return await this.questionsService.findAllUserQuestion(userID)
   }
   
@@ -46,11 +47,12 @@ export class QuestionsController {
     return await this.questionsService.findAll();
   }
 
-  // question details
+  // get one question
   @Public()
   @Get('questions/:questionID')
   async findOne(@Param('questionID') questionID: string): Promise<Question | null> {
-    return await this.questionsService.findOne(questionID);
+    const result = await this.questionsService.findOne(questionID);
+    return result
   }
 
   // route for editing questions

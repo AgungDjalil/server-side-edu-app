@@ -83,16 +83,15 @@ export class AuthService {
       if (body.username) {
         const user = await this.userRepository.findOneBy({ username: body.username })
 
-        if(user && !user.isActive)
-          throw new ForbiddenException(`you've been suspended for ${user.suspensionEndDate}`)
+        if(!user) throw new NotFoundException('user not found')
 
-        if(user && !user.isActive)
-          throw new ForbiddenException(`you have been blocked forever`)
+        if(user && !user.isActive) throw new ForbiddenException(`you've been suspended for ${user.suspensionEndDate}`)
+
+        if(user && !user.isActive) throw new ForbiddenException(`you have been blocked forever`)
 
         const passwordMatch = await bcrypt.compare(body.password, user.password)
 
-        if (!passwordMatch)
-          throw new NotAcceptableException('password mismatch');
+        if (!passwordMatch) throw new NotAcceptableException('password mismatch');
 
         const payload = {
           sub: user.userID,
@@ -102,16 +101,19 @@ export class AuthService {
         }
 
         return {
-          access_token: await this.jwtService.signAsync(payload)
+          access_token: await this.jwtService.signAsync(payload),
+          role: user.role,
+          userID: user.userID
         }
 
       } else if (body.email) {
         const user = await this.userRepository.findOneBy({ email: body.email })
+        
+        if(!user) throw new NotFoundException('user not found')
 
         const passwordMatch = await bcrypt.compare(body.password, user.password)
 
-        if (!passwordMatch)
-          throw new NotAcceptableException('password mismatch');
+        if (!passwordMatch) throw new NotAcceptableException('password mismatch');
 
         const payload = {
           sub: user.userID,
@@ -121,11 +123,13 @@ export class AuthService {
         }
 
         return {
-          access_token: await this.jwtService.signAsync(payload)
+          access_token: await this.jwtService.signAsync(payload),
+          role: user.role,
+          userID: user.userID
         }
       }
     } catch (err) {
-      return err.message
+      throw err
     }
   }
 }

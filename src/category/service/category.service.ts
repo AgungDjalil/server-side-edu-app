@@ -9,6 +9,14 @@ import { Repository } from 'typeorm';
 export class CategoryService {
   constructor(@InjectRepository(Category) private categoryRepository: Repository<Category>) {}
 
+  async findOneByID(categoryID: string) {
+    const category = await this.categoryRepository.findOne({
+      where: { categoryID }
+    })
+
+    return category
+  }
+
   async update(userID: string, categoryID: string, body: UpdateCategoryDto): Promise<Category> {
     try {
       const category = await this.categoryRepository.findOne({

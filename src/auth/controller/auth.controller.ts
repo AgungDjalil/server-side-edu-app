@@ -13,13 +13,6 @@ import { UserDTO } from 'src/users/dto/user.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
-  // // logout user
-  // @Post('/auth/logout')
-  // async logoutUser(@Headers('authorization') token: string): Promise<void> {
-  //   const [Bearer, JwtToken] = token.split(' ');
-  //   console.log(token)
-  // }
-
   // route for make user with role admin
   @Roles(Role.Admin)
   @Serialize(UserDTO)

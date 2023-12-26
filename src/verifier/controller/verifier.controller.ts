@@ -5,6 +5,7 @@ import { Role } from 'src/enum/role.enum';
 import { AnswerService } from 'src/answer/service/answer.service';
 import Serialize from 'src/interceptors/serialize.interceptor';
 import { AnswerDTO } from 'src/answer/dto/answer.dto';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('api')
 @Serialize(AnswerDTO)
@@ -17,7 +18,7 @@ export class VerifierController {
   async verifyAnswer(@Param('answerID') answerID: string): Promise<Answer | null> {
     return await this.answerService.verifyAnswer(answerID)
   }
-  
+
   // get all unverified answer
   @Roles(Role.Moderator)
   @Get('verifier/answer')

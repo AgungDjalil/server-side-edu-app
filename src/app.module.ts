@@ -12,6 +12,7 @@ import { ReportsModule } from './reports/reports.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/auth.guard';
 import { RolesGuard } from './guards/role.guard';
+import { PaginationPipe } from './pipes/pagination.pipe';
 
 @Module({
   providers: [

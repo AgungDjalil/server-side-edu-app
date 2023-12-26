@@ -6,4 +6,7 @@ export class CategoryDTO {
 
     @Expose()
     createdAt: Date;
+
+    @Expose()
+    categoryID: string;
 }

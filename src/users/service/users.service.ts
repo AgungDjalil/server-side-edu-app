@@ -1,23 +1,32 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm'
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { Repository } from 'typeorm'
+import { ILike, Repository } from 'typeorm'
 import { User } from '../../users/entities/user.entity'
 import { SuspendUserDTO } from '../dto/suspend-user.dto';
 import { ReportsUserService } from 'src/reports/service/user/reports-user.service';
+import { PageOptionsDto } from '../dto/page-options.dto';
+import { PageMetaDto } from '../dto/page-meta.dto';
+import { PageDto } from '../dto/page.dto';
+import { UserDTO } from '../dto/user.dto';
+import { PageService } from './page.service';
 
 @Injectable()
-export class UsersService {
+export class UsersService extends PageService{
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>, 
     private reportsUserService: ReportsUserService
-  ) {}
+  ) { 
+    super()
+  }
 
-  async find(): Promise<User[] | null> {
+  async find(query: any): Promise<User[] | null> {
     try {
-      const users = await this.userRepository.find()
+      if(query.username) return await this.userRepository.find({ where: { username: ILike(`%${query.username}%`) }})
 
-      return users
+      if(query.email) return await this.userRepository.find({ where: { email: ILike(`%${query.email}%`) }})
+
+      if(!query.email && !query.username) return await this.userRepository.find()
       
     } catch (err) {
       return err.message
@@ -43,7 +52,6 @@ export class UsersService {
       return false
 
     } catch (err) {
-      console.log(err)
       return err.message
     }
   }
@@ -68,18 +76,25 @@ export class UsersService {
     return false;
   }
 
-  async findAll(): Promise<User[] | null> {
-    const users = await this.userRepository.find({
-      where: { 
-        isActive: true,
-        isSuspend: false
-      }
-    })
+  async findAll(pageOptionsDto: PageOptionsDto): Promise<PageDto<UserDTO>> {
+    try {
+      const queryBuilder = this.userRepository.createQueryBuilder('user')
 
-    if(!users)
-      throw new NotFoundException("can't find any users");
+      queryBuilder
+        .orderBy('user.joinAt', pageOptionsDto.order)
+        .skip(pageOptionsDto.skip)
+        .take(pageOptionsDto.take)
 
-    return users;
+      const itemCount = await queryBuilder.getCount()
+      const { entities } = await queryBuilder.getRawAndEntities()
+
+      const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto})
+
+      return new PageDto(entities, pageMetaDto)
+
+    } catch (err) {
+      return err.message
+    }
   }
 
   async findOne(userID: string): Promise<User | null> {

@@ -11,6 +11,13 @@ import { Public } from 'src/decorators/public.decorator';
 export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
 
+  // get one tag
+  @Public()
+  @Get('tags/:tagID')
+  async getOneTag(@Param('tagID') tagID: string) {
+    return await this.tagsService.finOneByID(tagID)
+  }
+
   // create new tags
   @Roles(Role.Moderator)
   @Post('tags/create')

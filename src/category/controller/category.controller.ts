@@ -15,6 +15,13 @@ import { Public } from 'src/decorators/public.decorator';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
+  // get one category
+  @Public()
+  @Get('category/:categoryID')
+  async getOneCategory(@Param('categoryID') categoryID: string) {
+    return this.categoryService.findOneByID(categoryID)
+  }
+
   // create a new category
   @Roles(Role.Moderator)
   @Post('category/user/create')

@@ -10,4 +10,8 @@ export class UpdateQuestionDto {
     @IsString()
     @IsOptional()
     category: string;
+
+    @IsString()
+    @IsOptional()
+    tag: string
 }
