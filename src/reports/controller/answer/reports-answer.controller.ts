@@ -10,7 +10,7 @@ import { Role } from "src/enum/role.enum";
 export class ReportsAnswerController {
     constructor(private readonly reportsAnswerService: ReportsAnswerService) { }
 
-    // route for get lla reprted answer
+    // route for get all reprted answer
     @Roles(Role.Admin)
     @Get('reports/answer')
     async findAllReportedAnswer(): Promise<ReportAnswer[] | null> {

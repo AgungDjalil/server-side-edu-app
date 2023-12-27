@@ -91,7 +91,8 @@ export class AnswerService {
         where: { 
           questionID,
           isActive: true
-        } 
+        },
+        relations: ['userID']
       })
 
       return answer

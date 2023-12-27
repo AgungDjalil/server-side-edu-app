@@ -10,7 +10,7 @@ import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
 
 @Controller('api')
-@Serialize(CommentDTO)
+// @Serialize(CommentDTO)
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 

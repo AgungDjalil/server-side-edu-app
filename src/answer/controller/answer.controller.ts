@@ -11,7 +11,7 @@ import { Roles } from 'src/decorators/role.decorator';
 import { Role } from 'src/enum/role.enum';
 
 @Controller('api')
-@Serialize(AnswerDTO)
+// @Serialize(AnswerDTO)
 export class AnswerController {
   constructor(private readonly answerService: AnswerService) {}
 
@@ -30,8 +30,8 @@ export class AnswerController {
   }
   
   // get all users answer
-  @Get('answer/user')
-  async findAllUserAnswer(@CurrentUserID() userID: string): Promise<Answer[] | null> {
+  @Get('answer/:userID')
+  async findAllUserAnswer(@Param('userID') userID: string): Promise<Answer[] | null> {
     return await this.answerService.findAllUserAnswer(userID)
   }
 

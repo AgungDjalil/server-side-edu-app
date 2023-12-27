@@ -15,7 +15,9 @@ export class ReportsUserController {
   @Roles(Role.Admin)
   @Get('reports/users')
   async findAll(): Promise<ReportUser[]> {
-    return await this.reportsUserService.findAllUserReported();
+    const result = await this.reportsUserService.findAllUserReported();
+    console.log(result)
+    return result
   }
   
   // route for report user

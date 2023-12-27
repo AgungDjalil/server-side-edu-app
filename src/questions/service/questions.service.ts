@@ -84,7 +84,7 @@ export class QuestionsService {
     try {
       const question = await this.questionRepository.findOne({
         where: { questionID },
-        relations: ['categoryID', 'tagID']
+        relations: ['categoryID', 'tagID', 'userID']
       })
       
       return question;

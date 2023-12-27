@@ -18,7 +18,8 @@ export class CommentsService {
         where: {
           questionID,
           isActive: true
-        } 
+        },
+        relations: ['userID']
       })
 
       return comments
@@ -28,7 +29,8 @@ export class CommentsService {
         where: {
           answerID,
           isActive: true
-        } 
+        },
+        relations: ['userID']
       })
       
       return comments
@@ -60,7 +62,7 @@ export class CommentsService {
           questionID,
           commentText: body.commentText 
         })
-        console.log(comment)
+        
         await this.commentRepository.save(comment)  
     
         return comment;
