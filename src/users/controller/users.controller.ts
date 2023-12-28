@@ -18,17 +18,16 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   // get all users ( banned, suspended, etc)
-  @Serialize(UserDTO)
-  @Roles(Role.Admin)
-  @Get('users/admin/all')
+  @Public()
+  @Get('users')
   async findAllUsers(@Query() query: string): Promise<User[] | null> {
     return await this.usersService.find(query)
   }
 
   // get all users ( isActive: true, isSuspend: false)
   // this route use pagination
-  @Public()
-  @Get('users')
+  @Roles(Role.Admin)
+  @Get('users/admin/all')
   async findAll(@Query() pageOptionsDto :PageOptionsDto) {
     return await this.usersService.findAll(pageOptionsDto);
   }

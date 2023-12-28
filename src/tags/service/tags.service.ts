@@ -9,6 +9,11 @@ import { Repository } from 'typeorm';
 export class TagsService {
   constructor(@InjectRepository(Tag) private tagRepository: Repository<Tag>) {}
 
+  async getAll() {
+    const tags = await this.tagRepository.find()
+    return tags
+  }
+
   async finOneByID(tagID: string) {
     const tag = await this.tagRepository.findOne({
       where: { tagID }
@@ -17,10 +22,11 @@ export class TagsService {
     return tag
   }
 
-  async create(body: CreateTagDto): Promise<Tag> {
+  async create(body: CreateTagDto, userID: string): Promise<Tag> {
     try {
       const tag = this.tagRepository.create({ 
         tagName: body.tagName,
+        userID
       })
   
       await this.tagRepository.save(tag)

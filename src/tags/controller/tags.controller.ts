@@ -6,10 +6,18 @@ import { Role } from 'src/enum/role.enum';
 import { Roles } from 'src/decorators/role.decorator';
 import { Tag } from '../entities/tag.entity';
 import { Public } from 'src/decorators/public.decorator';
+import { CurrentUserID } from 'src/decorators/currentUserID';
 
 @Controller('api')
 export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
+
+  // get all tags (banned and suspended)
+  @Roles(Role.Moderator)
+  @Get('tags/all')
+  async getAllTags() {
+    return this.tagsService.getAll()
+  }
 
   // get one tag
   @Public()
@@ -21,8 +29,8 @@ export class TagsController {
   // create new tags
   @Roles(Role.Moderator)
   @Post('tags/create')
-  async create(@Body() body: CreateTagDto): Promise<Tag> {
-    return await this.tagsService.create(body);
+  async create(@Body() body: CreateTagDto, @CurrentUserID() userID: string): Promise<Tag> {
+    return await this.tagsService.create(body, userID);
   }
 
   // get all tags

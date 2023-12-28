@@ -15,6 +15,13 @@ import { Public } from 'src/decorators/public.decorator';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
+  // get all categories (banned or suspended)
+  @Roles(Role.Moderator)
+  @Get('category/all')
+  async getAllCategory() {
+    return this.categoryService.getAllCategory()
+  }
+
   // get one category
   @Public()
   @Get('category/:categoryID')

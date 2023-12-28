@@ -15,6 +15,12 @@ import { Role } from 'src/enum/role.enum';
 export class AnswerController {
   constructor(private readonly answerService: AnswerService) {}
 
+  // route for get one answer
+  @Get('/answers/:answerID')
+  async getOneAnswer(@Param('answerID') answerID: string){
+    return this.answerService.findOneByID(answerID)
+  }
+
   // route for get all answer (banned and no)
   @Roles(Role.Admin)
   @Get('answers')

@@ -13,6 +13,15 @@ export class AnswerService {
     private readonly reportAnswerService: ReportsAnswerService
   ) {}
 
+  async findOneByID(answerID: string) {
+    try {
+      const answer = await this.answerRepository.findOneBy({answerID})
+      return answer
+    } catch (err) {
+      throw err
+    }
+  }
+
   async find(): Promise<Answer[] | null> {
     try {
       const answer = await this.answerRepository.find()

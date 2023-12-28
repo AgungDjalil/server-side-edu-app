@@ -22,11 +22,11 @@ export class UsersService extends PageService{
 
   async find(query: any): Promise<User[] | null> {
     try {
-      if(query.username) return await this.userRepository.find({ where: { username: ILike(`%${query.username}%`) }})
+      if(query.username) return await this.userRepository.find({ where: { isActive: true, username: ILike(`%${query.username}%`) }})
 
-      if(query.email) return await this.userRepository.find({ where: { email: ILike(`%${query.email}%`) }})
+      if(query.email) return await this.userRepository.find({ where: { isActive: true, email: ILike(`%${query.email}%`) }})
 
-      if(!query.email && !query.username) return await this.userRepository.find()
+      if(!query.email && !query.username) return await this.userRepository.find({ where: { isActive: true}})
       
     } catch (err) {
       return err.message
