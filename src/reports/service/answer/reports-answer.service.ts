@@ -28,7 +28,8 @@ export class ReportsAnswerService {
     async findAllReportedAnswer(): Promise<ReportAnswer[] | null> {
         try {
             const answer = await this.reportRepositoryAnswer.find({
-                where: { isActive: true }
+                where: { isActive: true },
+                relations: ['reportedAnswerID']
             })
     
             return answer  

@@ -129,7 +129,7 @@ export class QuestionsService {
       if(isSuccess) {
         await this.questionRepository.save(question)
   
-        return 'succes to delete user'; 
+        return 'succes to delete question'; 
       }
       
     } catch (err) {

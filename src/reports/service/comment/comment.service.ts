@@ -28,7 +28,8 @@ export class ReportsCommentService {
     async findAllReportedComment(): Promise<ReportComment[] | null> {
         try {
             const comment = await this.reportRepositoryComment.find({
-                where: { isActive: true }
+                where: { isActive: true },
+                relations: ['reportedCommentID']
             })
     
             return comment 

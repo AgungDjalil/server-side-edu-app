@@ -28,7 +28,8 @@ export class ReportsUserService {
   async findAllUserReported(): Promise<ReportUser[] | null> {
     try {
       const reportedUser = await this.reportRepositoryUser.find({
-        where: { isActive: true }
+        where: { isActive: true },
+        relations: ['reportedUser']
       })
   
       return reportedUser

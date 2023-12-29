@@ -21,9 +21,9 @@ export class ReportCommentController {
     @Post('reports/comment/:reportedCommentID/create')
     async createReportForAnswer(
         @CurrentUserID() userID: string,
-        @Param('reportedAnswerID') reportedAnswerID: string,
+        @Param('reportedCommentID') reportedCommentID: string,
         @Body() body: CreateReportDto
     ): Promise<ReportComment> {
-        return await this.reportsCommentService.createReportForComment(userID, reportedAnswerID, body);
+        return await this.reportsCommentService.createReportForComment(userID, reportedCommentID, body);
     }
 }

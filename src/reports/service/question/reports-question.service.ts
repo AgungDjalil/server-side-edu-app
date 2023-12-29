@@ -28,7 +28,8 @@ export class ReportsQuestionService {
     async findAllReportQuestions(): Promise<ReportQuestion[]> {
         try {
             const question = await this.reportRepositoryQuestion.find({
-                where: { isActive: true }
+                where: { isActive: true },
+                relations: ['reportedQuestionID']
             })
 
             return question

@@ -16,7 +16,6 @@ export class ReportsUserController {
   @Get('reports/users')
   async findAll(): Promise<ReportUser[]> {
     const result = await this.reportsUserService.findAllUserReported();
-    console.log(result)
     return result
   }
   
