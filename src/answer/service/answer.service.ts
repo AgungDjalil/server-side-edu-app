@@ -51,7 +51,8 @@ export class AnswerService {
   async findAllAnswerUnverified(): Promise<Answer[] | null> {
     try {
       const answer = await this.answerRepository.find({
-        where: { isVerified: false }
+        where: { isVerified: false },
+        relations: ['questionID']
       })
   
       return answer

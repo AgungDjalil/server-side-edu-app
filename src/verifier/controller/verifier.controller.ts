@@ -8,7 +8,7 @@ import { AnswerDTO } from 'src/answer/dto/answer.dto';
 import { Public } from 'src/decorators/public.decorator';
 
 @Controller('api')
-@Serialize(AnswerDTO)
+// @Serialize(AnswerDTO)
 export class VerifierController {
   constructor(private readonly answerService: AnswerService) {}
 
